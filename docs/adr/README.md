@@ -11,4 +11,5 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0001 | Rust workspace, toolchain and quality gates     | accepted |
 | 0002 | Crate boundaries: pure core, adapters at the edge | accepted |
 | 0003 | Hooks: fast pre-commit, tests on pre-push       | accepted |
-| 0004 | Defer Bevy and engine crates to the first feature | accepted |
+| 0004 | Defer Bevy and engine crates to the first feature | superseded by 0005 |
+| 0005 | Engine dependency versions                      | accepted |

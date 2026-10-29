@@ -1,6 +1,6 @@
 # 0004. Defer Bevy and engine crates to the first feature
 
-- Status: accepted
+- Status: superseded by 0005
 - Date: 2026-10-29
 - Requirements: STACK.md (Stack, Dependencies)
 
