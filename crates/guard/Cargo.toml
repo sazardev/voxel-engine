@@ -1,11 +1,11 @@
 [package]
 name = "guard"
-description = "Architecture tests: mechanical enforcement of STACK.md rules. Runs with `cargo test --workspace`."
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
+rust-version.workspace = true
+description = "Architecture tests: mechanical enforcement of STACK.md rules. Runs with `cargo test --workspace`."
 
 [lints]
 workspace = true
