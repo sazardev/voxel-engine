@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "schedule": ["before 6am on monday"],
+  "lockFileMaintenance": { "enabled": true, "automerge": true },
+  "packageRules": [
+    {
+      "description": "Bevy and its plugins move together",
+      "matchPackageNames": ["bevy", "bevy_*", "avian3d", "leafwing-input-manager"],
+      "groupName": "bevy ecosystem"
+    },
+    {
+      "description": "Patch updates automerge when CI is green",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Majors get their own PR",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "separateMajorMinor": true
+    }
+  ]
+}
