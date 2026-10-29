@@ -21,8 +21,10 @@ voxel-gen.workspace = true
 voxel-mesh.workspace = true
 
 [features]
-# Chrome-trace spans and frame-time logging; open the trace in chrome://tracing or Perfetto.
-profile = ["bevy/trace_chrome"]
+# Developer tools: overlay, debug hotkeys and verbose logs. Compiled out of player builds.
+dev = []
+# Dev tools plus Chrome-trace spans; open the trace in chrome://tracing or Perfetto.
+profile = ["dev", "bevy/trace_chrome"]
 
 [lib]
 name = "game"

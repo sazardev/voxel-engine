@@ -54,6 +54,8 @@ cognitive_complexity = "warn"
 too_many_arguments = "warn"
 # Bevy systems take many parameters and complex query types by design.
 type_complexity = "allow"
+# Bevy system parameters (`Res<T>`, `Query<..>`) are taken by value by design.
+needless_pass_by_value = "allow"
 module_name_repetitions = "allow"
 
 [profile.dev]

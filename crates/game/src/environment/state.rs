@@ -9,6 +9,18 @@ pub enum Weather {
     Storm,
 }
 
+impl Weather {
+    /// The next weather in a fixed cycle; used by debug controls.
+    #[must_use]
+    pub const fn next(self) -> Self {
+        match self {
+            Self::Clear => Self::Rain,
+            Self::Rain => Self::Storm,
+            Self::Storm => Self::Clear,
+        }
+    }
+}
+
 /// Time and weather of the world. `time_of_day` is a fraction of a day in `0.0..1.0`.
 #[derive(Debug, Clone, Copy, PartialEq, Resource)]
 pub struct Environment {
@@ -36,6 +48,11 @@ impl Environment {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_weather_cycles_back_to_clear() {
+        assert_eq!(Weather::Clear.next().next().next(), Weather::Clear);
+    }
 
     #[test]
     fn advancing_past_midnight_wraps_to_the_next_day() {

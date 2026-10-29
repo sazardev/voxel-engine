@@ -1,0 +1,7 @@
+[alias]
+# Developer build: overlay (F3), debug hotkeys, verbose logs.
+dev = "run -p game --features dev"
+# Developer build with Chrome-trace profiling, optimized.
+profile = "run -p game --release --features profile"
+# Player build: no developer tools, quiet logs.
+play = "run -p game --release"
