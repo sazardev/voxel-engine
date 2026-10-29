@@ -19,7 +19,7 @@ Project-specific rules for AI agents. The entry point and workflow are in `../..
 - Keep one rig for first and third person with a mode switch; do not fork the player controller.
 - Never weaken or skip a CI step to make a change pass.
 - A new quality gate is added to the Commands table and to `ci.yml` in the same change.
-- Architecture rules (file size, no `utils`, pure crates, no network, no platform branching in gameplay) are enforced by the `guard` crate inside `cargo test --workspace`; a new rule becomes a new guard test, not a prose-only rule.
+- Architecture rules (file size, no `utils`, pure crates, no network, no platform branching in gameplay) are enforced by the `guard` crate inside `cargo test --workspace --all-features`; a new rule becomes a new guard test, not a prose-only rule.
 - Crate dependency direction is enforced by `cargo deny` bans; a new crate adds its ban in the same change.
 - Never put secrets in workflow files; use repository or environment secrets.
 - Never bypass hooks with `--no-verify`.

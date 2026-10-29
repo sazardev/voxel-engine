@@ -11,6 +11,7 @@ One topic per file, indexed from `../../STACK.md`. Change a topic in its file; a
 | `lighting-and-volumetrics.md` | Shadows, fog, froxel volumetrics             |
 | `world-streaming.md`          | Streaming, LOD, GPU culling                  |
 | `camera-and-input.md`         | First and third person rig, comfort, input   |
+| `dev-mode.md`                 | Dev vs player builds, dev tools, aliases     |
 | `automation.md`               | CI, hooks, Renovate                          |
 | `testing.md`                  | Test strategy                                |
 | `quality-gates.md`            | Pass/fail criteria and frame budgets         |

@@ -11,23 +11,24 @@ runs on a phone with cheap light and on a desktop GPU with ray-marched light. Ev
 
 ## Commands
 
-| Task              | Command                                                 |
-| ----------------- | ------------------------------------------------------- |
-| Run (desktop)     | `cargo run -p game`                                     |
-| Run (web)         | `trunk serve`                                           |
-| Android           | `cargo ndk -t arm64-v8a build -p game --release`        |
-| Test              | `cargo test --workspace`                                |
-| Lint              | `cargo clippy --workspace --all-targets -- -D warnings` |
-| Format            | `cargo fmt --all`                                       |
-| Format check      | `cargo fmt --all --check`                               |
-| Dependency check  | `cargo deny check`                                      |
-| Spell check       | `typos`                                                 |
-| Docs/TOML format  | `dprint check` (fix: `dprint fmt`)                      |
-| Benchmark         | `cargo bench -p voxel-core`                             |
-| Coverage (signal) | `cargo llvm-cov --workspace --summary-only`             |
-| Profile           | `cargo run -p game --release --features profile`        |
-| Release (desktop) | `cargo build --release -p game`                         |
-| Install hooks     | `lefthook install`                                      |
+| Task              | Command                                                                |
+| ----------------- | ---------------------------------------------------------------------- |
+| Run (dev mode)    | `cargo dev` (overlay F3, hotkeys, verbose logs)                        |
+| Run (player)      | `cargo play` (release, no dev tools)                                   |
+| Run (web)         | `trunk serve`                                                          |
+| Android           | `cargo ndk -t arm64-v8a build -p game --release`                       |
+| Test              | `cargo test --workspace --all-features`                                |
+| Lint              | `cargo clippy --workspace --all-targets --all-features -- -D warnings` |
+| Format            | `cargo fmt --all`                                                      |
+| Format check      | `cargo fmt --all --check`                                              |
+| Dependency check  | `cargo deny check`                                                     |
+| Spell check       | `typos`                                                                |
+| Docs/TOML format  | `dprint check` (fix: `dprint fmt`)                                     |
+| Benchmark         | `cargo bench -p voxel-core`                                            |
+| Coverage (signal) | `cargo llvm-cov --workspace --summary-only`                            |
+| Profile           | `cargo profile` (release, dev tools + Chrome trace)                    |
+| Release (desktop) | `cargo build --release -p game`                                        |
+| Install hooks     | `lefthook install`                                                     |
 
 ## Project docs
 
@@ -40,6 +41,7 @@ runs on a phone with cheap light and on a desktop GPU with ray-marched light. Ev
 | Shadows, fog, volumetrics       | `docs/stack/lighting-and-volumetrics.md` |
 | Chunk loading, LOD, culling     | `docs/stack/world-streaming.md`          |
 | Camera rig, comfort, input      | `docs/stack/camera-and-input.md`         |
+| Dev and player builds           | `docs/stack/dev-mode.md`                 |
 | CI, hooks, dependency updates   | `docs/stack/automation.md`               |
 | Tests                           | `docs/stack/testing.md`                  |
 | Pass/fail criteria, budgets     | `docs/stack/quality-gates.md`            |

@@ -14,6 +14,8 @@ crates/
     src/
       lib.rs                       GamePlugin: registers feature plugins
       main.rs                      window + renderer + GamePlugin
+      run_mode.rs                  RunMode (Player or Dev) and the log filter per mode
+      dev/                         developer tools, compiled only with `--features dev` (overlay, hotkeys)
       environment/                 Environment resource: time, weather (single source for light, fog, sky)
       render/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
@@ -37,5 +39,6 @@ docs/stack  docs/principles  docs/adr   topic docs, engineering principles, deci
 .github/pull_request_template.md   review checklist
 lefthook.yml                       pre-commit: fmt, clippy, typos, dprint; pre-push: test, deny; commit-msg: Conventional Commits
 renovate.json                      grouped weekly updates; automerge patch
+.cargo/config.toml                 aliases: cargo dev, cargo play, cargo profile
 rust-toolchain.toml  rustfmt.toml  clippy.toml  deny.toml  dprint.json  _typos.toml
 ```

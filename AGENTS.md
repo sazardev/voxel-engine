@@ -23,14 +23,16 @@ Source of truth, read in this order before changing anything:
 
 ```
 cargo fmt --all --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo test --workspace --all-features
 cargo deny check
 typos
 dprint check
 ```
 
 Hooks (`lefthook install`) run them: pre-commit fmt, clippy, spelling and docs format; pre-push test + deny. In Claude Code, `/check` runs them all and a Stop hook runs the fast ones before you finish. Commands: `/new-adr`, `/new-feature`.
+
+Run the game: `cargo dev` (developer build: overlay F3, hotkeys, verbose logs), `cargo play` (player build), `cargo profile`. Dev tools live only in `crates/game/src/dev/` (`docs/stack/dev-mode.md`).
 
 ## Architecture in one screen
 

@@ -16,3 +16,4 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0006 | Serialization: postcard, compression deferred     | accepted           |
 | 0007 | Guard rails: architecture tests and lint policy   | accepted           |
 | 0008 | Documentation structure and extra checks          | accepted           |
+| 0009 | Dev mode as a compile-time feature                | accepted           |
