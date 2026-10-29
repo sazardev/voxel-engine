@@ -12,3 +12,5 @@ workspace = true
 
 [dependencies]
 voxel-core.workspace = true
+block-mesh.workspace = true
+thiserror.workspace = true

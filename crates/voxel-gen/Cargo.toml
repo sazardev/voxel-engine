@@ -12,3 +12,4 @@ workspace = true
 
 [dependencies]
 voxel-core.workspace = true
+thiserror.workspace = true

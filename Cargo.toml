@@ -17,9 +17,15 @@ platform = { path = "crates/platform" }
 bevy = "0.20"
 avian3d = "0.8"
 leafwing-input-manager = "0.22"
+thiserror = "2"
+tracing = "0.1"
+serde = { version = "1", features = ["derive"] }
+postcard = { version = "1", features = ["use-std"] }
+block-mesh = "0.2"
+proptest = "1"
 
 [workspace.lints.rust]
-# Unsafe lives only in documented modules that opt in with `#![allow(unsafe_code)]` and a SAFETY comment.
+# Unsafe lives only in documented modules that opt in with `#![expect(unsafe_code, reason = "...")]` and a SAFETY comment (ADR 0007).
 unsafe_code = "deny"
 missing_debug_implementations = "warn"
 unused_must_use = "deny"
@@ -35,8 +41,17 @@ unimplemented = "deny"
 dbg_macro = "deny"
 print_stdout = "warn"
 print_stderr = "warn"
+# Lints are never silenced in code without a reason; prefer #[expect(lint, reason = "...")].
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
+undocumented_unsafe_blocks = "deny"
+exit = "deny"
+mem_forget = "deny"
+clone_on_ref_ptr = "warn"
+str_to_string = "warn"
+cognitive_complexity = "warn"
+too_many_arguments = "warn"
 # Bevy systems take many parameters and complex query types by design.
-too_many_arguments = "allow"
 type_complexity = "allow"
 module_name_repetitions = "allow"
 
