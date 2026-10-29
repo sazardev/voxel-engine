@@ -1,0 +1,18 @@
+/target
+/dist
+*.wasm
+.DS_Store
+.env
+.env.*
+!.env.example
+# Android / iOS build output
+targets/android/**/build/
+targets/android/.gradle/
+targets/ios/build/
+targets/ios/DerivedData/
+# Profiler captures
+*.tracy
+*.trace
+# Local agent state
+.claude/settings.local.json
+.serena/

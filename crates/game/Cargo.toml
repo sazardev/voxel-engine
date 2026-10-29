@@ -1,0 +1,20 @@
+[package]
+name = "game"
+description = "Composition root: the Bevy App and its plugins."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+voxel-core.workspace = true
+voxel-gen.workspace = true
+voxel-mesh.workspace = true
+platform.workspace = true
+
+[features]
+profile = []

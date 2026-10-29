@@ -1,0 +1,54 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.90"
+license = "UNLICENSED"
+publish = false
+
+[workspace.dependencies]
+voxel-core = { path = "crates/voxel-core" }
+voxel-gen = { path = "crates/voxel-gen" }
+voxel-mesh = { path = "crates/voxel-mesh" }
+platform = { path = "crates/platform" }
+
+[workspace.lints.rust]
+# Unsafe lives only in documented modules that opt in with `#![allow(unsafe_code)]` and a SAFETY comment.
+unsafe_code = "deny"
+missing_debug_implementations = "warn"
+unused_must_use = "deny"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# Errors are values; panics are for programmer errors only.
+unwrap_used = "deny"
+expect_used = "warn"
+panic = "warn"
+todo = "deny"
+unimplemented = "deny"
+dbg_macro = "deny"
+print_stdout = "warn"
+print_stderr = "warn"
+# Bevy systems take many parameters and complex query types by design.
+too_many_arguments = "allow"
+type_complexity = "allow"
+module_name_repetitions = "allow"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+[profile.web]
+inherits = "release"
+opt-level = "s"
+lto = true
+panic = "abort"
