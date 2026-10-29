@@ -23,6 +23,7 @@ serde = { version = "1", features = ["derive"] }
 postcard = { version = "1", features = ["use-std"] }
 block-mesh = "0.2"
 proptest = "1"
+criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
 
 [workspace.lints.rust]
 # Unsafe lives only in documented modules that opt in with `#![expect(unsafe_code, reason = "...")]` and a SAFETY comment (ADR 0007).

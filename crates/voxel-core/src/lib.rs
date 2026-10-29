@@ -1,14 +1,20 @@
 //! Chunk storage, coordinates and edits. Pure Rust: no Bevy types (ADR 0002).
+//!
+//! Start here when adding voxel logic: a small type per file, errors as enums, ports as traits
+//! owned by this crate (`ChunkStore`, `Clock`) with an in-memory fake for tests.
 
-/// Edge length of a chunk, in voxels.
-pub const CHUNK_EDGE: usize = 32;
+mod chunk;
+mod clock;
+mod coords;
+mod edit_error;
+mod memory_store;
+mod store;
+mod voxel;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn chunk_edge_is_a_power_of_two() {
-        assert!(CHUNK_EDGE.is_power_of_two());
-    }
-}
+pub use chunk::{CHUNK_EDGE, CHUNK_VOLUME, Chunk};
+pub use clock::{Clock, FixedClock};
+pub use coords::{ChunkPos, LocalPos};
+pub use edit_error::EditError;
+pub use memory_store::MemoryChunkStore;
+pub use store::{ChunkStore, StoreError};
+pub use voxel::VoxelId;
