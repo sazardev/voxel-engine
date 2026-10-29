@@ -162,6 +162,7 @@ Main flows:
 - Given a gameplay rule, when tested, then it runs in a unit test without starting the engine.
 
 <!-- module: offline-saves -->
+
 ### FR-23: Offline play
 
 The system must work completely without a network.
@@ -185,6 +186,7 @@ The system must keep old saves working.
 - Given a save from a newer version, when the player opens it, then the game explains it cannot open it and changes nothing
 
 <!-- module: voxel-world -->
+
 ### FR-26: Streaming
 
 The system must show a large world that loads around the player without stalls.
@@ -209,6 +211,7 @@ The system must give each voxel kind rules for how it behaves.
 - Given an emissive voxel, when it is in the world, then it lights its surroundings
 
 <!-- module: world-generation -->
+
 ### FR-29: Seeds
 
 The system must generate the same world from the same seed.
@@ -231,6 +234,7 @@ The system must place structures and resources in a believable way.
 - Given a structure, when it is placed, then it fits the terrain and never overlaps another structure
 
 <!-- module: medieval-world -->
+
 ### FR-32: Regions and landmarks
 
 The system must make a world with places that have a character of their own.
@@ -253,6 +257,7 @@ The system must change over time.
 - Given the game clock, when a day passes, then light, weather and what people do change with it
 
 <!-- module: villages-npcs -->
+
 ### FR-35: Villages
 
 The system must generate villages that feel inhabited.
@@ -275,6 +280,7 @@ The system must make people react to the player.
 - Given the player's deeds, when they enter a village, then people greet, avoid or trade differently depending on their standing
 
 <!-- module: dialogue -->
+
 ### FR-38: Writing
 
 The system must let writers create conversations without touching code.
@@ -304,6 +310,7 @@ The system must support more than one language.
 - Given a chosen language, when a conversation plays, then the lines appear in that language and fall back to the original when missing
 
 <!-- module: quests -->
+
 ### FR-42: Kinds of quests
 
 The system must support quests of different weight.
@@ -328,6 +335,7 @@ The system must give outcomes that matter.
 - Given a quest that can fail, when its condition is met (a person dies, time runs out), then it fails with a clear message and consequences
 
 <!-- module: choices-consequences -->
+
 ### FR-45: Decisions
 
 The system must offer decisions that matter.
@@ -350,6 +358,7 @@ The system must keep one source of truth for what happened.
 - Given a save, when the player loads it, then all decisions and their effects are restored
 
 <!-- module: character-classes -->
+
 ### FR-48: Creating a character
 
 The system must let the player choose who they are.
@@ -373,6 +382,7 @@ The system must let characters grow.
 - Given equipment and skills, when the player changes them, then stats update at once and show what changed
 
 <!-- module: combat-destruction -->
+
 ### FR-51: Combat
 
 The system must make fighting responsive and readable.
@@ -397,6 +407,7 @@ The system must keep destruction under control.
 - Given a very destructive moment, when many pieces fall, then the frame rate stays within the budget by limiting active debris
 
 <!-- module: game-input -->
+
 ### FR-54: Devices
 
 The system must be playable with keyboard and mouse or a gamepad.
@@ -419,6 +430,7 @@ The system must offer options that help different players.
 - Given a one-handed or limited-mobility setup, when the player binds actions, then every action can be reached
 
 <!-- module: first-person -->
+
 ### FR-57: Movement and look
 
 The system must let the player move and look in first person with control that responds immediately.
@@ -442,6 +454,7 @@ The system must let players tune the view to feel comfortable.
 - Given "reduce motion" is on, when the player moves, then head bob, sway and camera shake are off
 
 <!-- module: frame-budget -->
+
 ### FR-60: Frame rate
 
 The system must hold a steady frame rate on the target hardware.
@@ -464,6 +477,7 @@ The system must let the team see where time goes.
 - Given a change to rendering, when it is made, then the frame time before and after is reported
 
 <!-- module: crafting-inventory -->
+
 ### FR-63: Inventory
 
 The system must let the player carry and organise items.
@@ -486,6 +500,7 @@ The system must make tools matter.
 - Given a tool with durability, when it is used, then it wears out and breaks at zero
 
 <!-- module: lighting-effects -->
+
 ### FR-66: Light and atmosphere
 
 The system must light the world so it feels real and readable.
@@ -509,6 +524,7 @@ The system must run on a range of hardware.
 - Given the lowest tier, when the game runs, then it still looks coherent and meets the frame rate target
 
 <!-- module: device-quality -->
+
 ### FR-69: Choosing a tier
 
 The system must pick a sensible quality for each device.
@@ -532,6 +548,7 @@ The system must be kind to batteries and heat.
 - Given the device gets hot or low on battery, when the system reports it, then the game offers to lower quality
 
 <!-- module: third-person -->
+
 ### FR-72: Following the character
 
 The system must keep the character in view while the player moves and looks around.
@@ -555,6 +572,7 @@ The system must let the player switch between camera modes.
 - Given a saved preference, when the game starts, then it opens in the last used view
 
 <!-- module: touch-controls -->
+
 ### FR-75: On-screen controls
 
 The system must be playable with touch alone.
@@ -570,6 +588,7 @@ The system must handle more than one input at a time.
 - Given a keyboard, mouse or gamepad is connected to a touch device, when the player uses it, then touch controls hide and the matching glyphs show
 
 <!-- module: performance -->
+
 ### FR-77: Response time
 
 The system must answer fast enough that people do not wait to do their work.

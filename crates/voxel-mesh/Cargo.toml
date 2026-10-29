@@ -1,16 +1,16 @@
 [package]
 name = "voxel-mesh"
-description = "Greedy meshing, AO bake and LOD meshes. No engine types."
 version.workspace = true
 edition.workspace = true
-rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
+rust-version.workspace = true
+description = "Greedy meshing, AO bake and LOD meshes. No engine types."
 
 [lints]
 workspace = true
 
 [dependencies]
-voxel-core.workspace = true
 block-mesh.workspace = true
 thiserror.workspace = true
+voxel-core.workspace = true

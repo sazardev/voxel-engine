@@ -19,8 +19,7 @@ First or third person, offline, readable at a glance.
 
 Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows shift toward blue/violet, highlights toward yellow.
 
-| Token | Value | Use |
-| --- | --- | --- | --- |
+| Token | Value | Use | | --- | --- | --- | --- |
 | `grass-ramp` | `#8BC34A` → `#3F7D2E` | same, darker ambient | Terrain top |
 | `stone-ramp` | `#C9C4BC` → `#5F5B66` | same | Rock, buildings |
 | `wood-ramp` | `#C98B4B` → `#5A3A26` | same | Trees, props |
@@ -44,12 +43,12 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 ## Typography
 
-| Role | Size / line height | Font | Use |
-| --- | --- | --- | --- |
-| title | 48 / 56 | Chunky display (approx. Fredoka) | Menus, titles |
-| hud-label | 16 / 20 | Pixel-leaning sans (approx. Silkscreen or Inter bold) | Item names, counts |
-| body | 16 / 24 | Inter | Descriptions, settings |
-| number | 20 / 24 | Tabular numerals | Stats, counts |
+| Role      | Size / line height | Font                                                  | Use                    |
+| --------- | ------------------ | ----------------------------------------------------- | ---------------------- |
+| title     | 48 / 56            | Chunky display (approx. Fredoka)                      | Menus, titles          |
+| hud-label | 16 / 20            | Pixel-leaning sans (approx. Silkscreen or Inter bold) | Item names, counts     |
+| body      | 16 / 24            | Inter                                                 | Descriptions, settings |
+| number    | 20 / 24            | Tabular numerals                                      | Stats, counts          |
 
 - HUD text always has a 1-2px dark outline or panel behind it; world-space labels scale with distance within limits.
 
@@ -74,25 +73,25 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 ## Shape and elevation
 
-| Token | Value | Use |
-| --- | --- | --- |
-| voxel-size | 1/16 block | Models, props |
-| ao | baked per vertex, 4 levels, strength 0.35 | Soft corner darkening |
-| shadow-color | tinted by the ambient `fill` color, never pure black | Depth and mood |
-| hud-radius | 4px (or 0 for a hard cube look) | HUD panels |
-| outline | optional 1px inverted-hull or edge detect | Selection, hover |
-| distance-fog | exponential, color = sky at the horizon, density by view distance | Hides chunk edges, adds scale |
-| height-fog | denser below a height, falls off upward | Valleys, caves, mornings |
-| aerial-perspective | distant objects shift toward the haze color and lose contrast | Depth |
-| dof-cinematic | f/2.8, focus on the subject, hexagonal bokeh | Cutscenes, photo mode |
-| tilt-shift | focus band with blur above and below | Miniature look (HD-2D style) |
-| bloom | HDR threshold 1.0, intensity 0.15 | Highlights, emissive |
-| vignette | 0.2 | Focus toward the center |
-| grain | 0.03, animated at 24 fps | Film texture |
-| chromatic-aberration | 0.002 at edges | Lens character |
-| contact-shadow | short screen-space ray, 0.3 m | Grounding small objects |
-| volumetrics | froxel fog, density 0.01-0.08 by environment, anisotropy 0.6 | Light shafts, haze |
-| light-shaft | sun and 2-4 key lights scatter; others do not | God rays, windows, torches |
+| Token                | Value                                                             | Use                           |
+| -------------------- | ----------------------------------------------------------------- | ----------------------------- |
+| voxel-size           | 1/16 block                                                        | Models, props                 |
+| ao                   | baked per vertex, 4 levels, strength 0.35                         | Soft corner darkening         |
+| shadow-color         | tinted by the ambient `fill` color, never pure black              | Depth and mood                |
+| hud-radius           | 4px (or 0 for a hard cube look)                                   | HUD panels                    |
+| outline              | optional 1px inverted-hull or edge detect                         | Selection, hover              |
+| distance-fog         | exponential, color = sky at the horizon, density by view distance | Hides chunk edges, adds scale |
+| height-fog           | denser below a height, falls off upward                           | Valleys, caves, mornings      |
+| aerial-perspective   | distant objects shift toward the haze color and lose contrast     | Depth                         |
+| dof-cinematic        | f/2.8, focus on the subject, hexagonal bokeh                      | Cutscenes, photo mode         |
+| tilt-shift           | focus band with blur above and below                              | Miniature look (HD-2D style)  |
+| bloom                | HDR threshold 1.0, intensity 0.15                                 | Highlights, emissive          |
+| vignette             | 0.2                                                               | Focus toward the center       |
+| grain                | 0.03, animated at 24 fps                                          | Film texture                  |
+| chromatic-aberration | 0.002 at edges                                                    | Lens character                |
+| contact-shadow       | short screen-space ray, 0.3 m                                     | Grounding small objects       |
+| volumetrics          | froxel fog, density 0.01-0.08 by environment, anisotropy 0.6      | Light shafts, haze            |
+| light-shaft          | sun and 2-4 key lights scatter; others do not                     | God rays, windows, torches    |
 
 - GUI scanlines: a fixed overlay `repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.15) 0 1px, transparent 1px 3px)`, pointer-events none; optional vignette and 1-2% barrel curvature via a shader or SVG filter.
 - TUI: no overlays; the effect comes from the phosphor palette, a dim surface one step above the background and generous blank lines.
@@ -107,20 +106,20 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 ## Motion
 
-| Token | Value | Use |
-| --- | --- | --- |
-| block-break | 8 crack frames, 0.4s, particles of the block color | Mining |
-| block-place | 120ms scale 0.9 → 1.0 | Placing |
-| camera-blur | camera rotation blur at 50% of object blur | Mouse look |
-| ui-ease | 150ms ease-out | Menus, hotbar |
-| focus-pull | 250-400ms ease-in-out | Changing subject |
-| motion-blur | shutter 180°, per-object velocity buffer, max 16px | Fast movement |
-| fov | 70-110, default 90, slider in settings | Comfort |
-| head-bob | 0.3 default, 0 with reduce motion | Walking |
-| mouse-look | raw input, no smoothing by default | Aiming |
-| spring-arm | collision shortening, recover 200ms | Walls and tight spaces |
-| aim-mode | FOV -15°, camera over the shoulder, 150ms blend | Aiming |
-| character-fade | dither out when the camera is closer than 0.8 m | No clipping pop |
+| Token          | Value                                              | Use                    |
+| -------------- | -------------------------------------------------- | ---------------------- |
+| block-break    | 8 crack frames, 0.4s, particles of the block color | Mining                 |
+| block-place    | 120ms scale 0.9 → 1.0                              | Placing                |
+| camera-blur    | camera rotation blur at 50% of object blur         | Mouse look             |
+| ui-ease        | 150ms ease-out                                     | Menus, hotbar          |
+| focus-pull     | 250-400ms ease-in-out                              | Changing subject       |
+| motion-blur    | shutter 180°, per-object velocity buffer, max 16px | Fast movement          |
+| fov            | 70-110, default 90, slider in settings             | Comfort                |
+| head-bob       | 0.3 default, 0 with reduce motion                  | Walking                |
+| mouse-look     | raw input, no smoothing by default                 | Aiming                 |
+| spring-arm     | collision shortening, recover 200ms                | Walls and tight spaces |
+| aim-mode       | FOV -15°, camera over the shoulder, 150ms blend    | Aiming                 |
+| character-fade | dither out when the camera is closer than 0.8 m    | No clipping pop        |
 
 - Reduced motion: no head bob, no camera shake, fewer particles.
 - Durations: 120 ms (hover, press), 200 ms (enter/leave of small elements), 280 ms (panels, dialogs); exits 30% shorter than entries.

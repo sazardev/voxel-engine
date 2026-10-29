@@ -26,9 +26,11 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo deny check
+typos
+dprint check
 ```
 
-Hooks (`lefthook install`) run them: pre-commit format + lint, pre-push test + deny.
+Hooks (`lefthook install`) run them: pre-commit fmt, clippy, spelling and docs format; pre-push test + deny. In Claude Code, `/check` runs them all and a Stop hook runs the fast ones before you finish. Commands: `/new-adr`, `/new-feature`.
 
 ## Architecture in one screen
 
@@ -41,15 +43,15 @@ Hooks (`lefthook install`) run them: pre-commit format + lint, pre-push test + d
 
 Do not rely on memory; the build fails on these (ADR 0007). Fix the code, never the check.
 
-| Principle                      | Enforced by                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------ |
-| One file, one responsibility   | `guard`: files over 500 lines fail; no `utils`/`helpers`/`common`/`misc`       |
-| Hexagonal / dependency rule    | `cargo deny` bans (DAG) and `guard` (no Bevy, IO, clock in `voxel-*`)          |
-| Small functions, low nesting   | clippy: 60 lines, 5 parameters, cognitive complexity                           |
-| No swallowed errors / panics   | clippy: `unwrap_used`, `expect_used`, `panic`, `todo` denied or warned         |
-| No silent lint bypass          | clippy: `allow_attributes` denied; use `#[expect(..., reason = "...")]`        |
-| Offline, platform-agnostic     | `guard` + `deny`: no network crates, no `target_os` in `game`                  |
-| Decisions are recorded         | `guard`: every ADR indexed and complete                                        |
+| Principle                    | Enforced by                                                              |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| One file, one responsibility | `guard`: files over 500 lines fail; no `utils`/`helpers`/`common`/`misc` |
+| Hexagonal / dependency rule  | `cargo deny` bans (DAG) and `guard` (no Bevy, IO, clock in `voxel-*`)    |
+| Small functions, low nesting | clippy: 60 lines, 5 parameters, cognitive complexity                     |
+| No swallowed errors / panics | clippy: `unwrap_used`, `expect_used`, `panic`, `todo` denied or warned   |
+| No silent lint bypass        | clippy: `allow_attributes` denied; use `#[expect(..., reason = "...")]`  |
+| Offline, platform-agnostic   | `guard` + `deny`: no network crates, no `target_os` in `game`            |
+| Decisions are recorded       | `guard`: every ADR indexed and complete                                  |
 
 SOLID in practice here:
 
@@ -61,13 +63,13 @@ SOLID in practice here:
 
 Where things go:
 
-| You are adding…                          | Put it in                                             |
-| ---------------------------------------- | ----------------------------------------------------- |
-| Voxel data, edits, coordinates           | `voxel-core` (pure, with tests)                       |
-| World generation                         | `voxel-gen` (seeded, deterministic)                   |
-| Meshing, AO, LOD meshes                  | `voxel-mesh`                                          |
-| Storage, input mapping, capability probe | `platform`, implementing a port from the core         |
-| A gameplay or render feature             | `game/src/<feature>/` as a `Plugin`, added in `GamePlugin` |
+| You are adding…                          | Put it in                                                                                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Voxel data, edits, coordinates           | `voxel-core` (pure, with tests)                                                                   |
+| World generation                         | `voxel-gen` (seeded, deterministic)                                                               |
+| Meshing, AO, LOD meshes                  | `voxel-mesh`                                                                                      |
+| Storage, input mapping, capability probe | `platform`, implementing a port from the core                                                     |
+| A gameplay or render feature             | `game/src/<feature>/` as a `Plugin`, added in `GamePlugin`                                        |
 | Shared error or logging need             | an error enum (`thiserror`) in the crate that owns it; `tracing` for logs; never a `utils` module |
 
 There is no network layer. "Connections" means ports and adapters: a new external resource (file, storage, device) is a port in the core plus an adapter in `platform`.
@@ -76,7 +78,7 @@ There is no network layer. "Connections" means ports and adapters: a new externa
 
 1. Requirement id and ADRs read; the change does one thing.
 2. Tests added first or alongside; behaviour, not implementation.
-3. The four checks pass locally (hooks run them).
+3. All the checks above pass locally (hooks run them).
 4. ADR written if a hard-to-reverse decision was made; `STACK.md`/`SPEC.md` updated if affected.
 5. Commit is Conventional, scoped to a crate or area, without unrelated changes.
 
@@ -93,4 +95,5 @@ There is no network layer. "Connections" means ports and adapters: a new externa
 ## Tests
 
 - Behaviour through the public API, named after the behaviour (`rejects_edit_outside_chunk`). Bug fix = regression test first.
+- `voxel-core` is the reference: copy its patterns (typed errors, a port with an in-memory fake, a property test, a criterion benchmark).
 - Pure crates: unit + property tests. Bevy code: headless `App` tests. No sleeps, no real clock, no network.

@@ -40,7 +40,13 @@ wildcards = "deny"
 allow-wildcard-paths = true
 # Bevy types stay out of the pure crates (ADR 0002); only game, platform and the Bevy plugins may depend on it.
 deny = [
-  { crate = "bevy", wrappers = ["game", "platform", "avian3d", "bevy_transform_interpolation", "leafwing-input-manager"] },
+  { crate = "bevy", wrappers = [
+    "game",
+    "platform",
+    "avian3d",
+    "bevy_transform_interpolation",
+    "leafwing-input-manager",
+  ] },
   # Dependency direction is a DAG: only the composition root depends on these (ADR 0002).
   { crate = "platform", wrappers = ["game"] },
   { crate = "voxel-gen", wrappers = ["game"] },

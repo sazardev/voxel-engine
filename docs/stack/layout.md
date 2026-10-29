@@ -1,36 +1,41 @@
 # Project layout
 
-Where code lives. Folders are by feature; dependencies point inward (ADR 0002).
+Where code lives. Folders are by feature; dependencies point inward (ADR 0002). Items marked _planned_ do not exist yet.
 
 ```
-Cargo.toml                         workspace; profiles: dev (opt 1, deps 3), release (thin LTO), web (opt "s", lto)
+Cargo.toml                         workspace, shared dependencies and lints; profiles: dev (opt 1, deps 3), release (thin LTO), web (opt "s", lto)
 crates/
-  voxel-core/                      chunks, palette storage, coordinates, edits (no Bevy)
+  voxel-core/                      chunks, coordinates, edits, ports (ChunkStore, Clock) and their fakes (no Bevy)
   voxel-gen/                       seeded generation (pure)
   voxel-mesh/                      greedy meshing, AO bake, LOD meshes
-  platform/                        storage, input mapping, capability probe, per-OS glue
+  platform/                        capabilities (probe result), storage, input mapping, per-OS glue
+  guard/                           architecture and docs tests only (ADR 0007)
   game/
     src/
-      main.rs                      App + plugins
-      world/                       streaming, edit queue, save
-      player/                      first_person.rs, third_person.rs, touch.rs
+      lib.rs                       GamePlugin: registers feature plugins
+      main.rs                      window + renderer + GamePlugin
+      environment/                 Environment resource: time, weather (single source for light, fog, sky)
       render/
-        tiers.rs                   Tier::{Low, Mid, High, Ultra}, chosen from the capability probe and the settings
-        passes/                    sun_shadows, ssao, voxel_rt (high), fog, bloom, post
-      ui/                          HUD, menus (scale for touch targets)
+        tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
+        passes/                    _planned_: sun_shadows, ssao, voxel_rt (high), fog, bloom, post
+      world/                       _planned_: streaming, edit queue, save
+      player/                      _planned_: first_person.rs, third_person.rs, touch.rs
+      ui/                          _planned_: HUD, menus (scale for touch targets)
 targets/
-  android/  ios/  web/             manifests, icons, index.html, service worker
+  android/  ios/  web/             _planned_: manifests, icons, index.html, service worker
 assets/                            shaders (WGSL), .vox models, palettes, LUTs
 ```
 
-```
-.github/workflows/ci.yml       jobs: lint (format + lint + typecheck), test, build; dependency cache; concurrency per branch
-```
+Repository tooling:
 
 ```
-lefthook.yml                   pre-commit: format + lint ({staged_files}); commit-msg: conventional commit check
-```
-
-```
-renovate.json                  extends config:recommended; schedule; packageRules: groups, automerge patch
+AGENTS.md  CLAUDE.md               entry point for AI agents (CLAUDE.md imports AGENTS.md)
+STACK.md  SPEC.md  DESIGN.md       stack index, product requirements, visual language
+docs/stack  docs/principles  docs/adr   topic docs, engineering principles, decisions (each folder has a README index)
+.claude/                           settings.json (Stop hook runs the gates), hooks/, commands/ (/check, /new-adr, /new-feature)
+.github/workflows/ci.yml           jobs: lint (fmt + clippy), deny, docs (typos + dprint), test, build (native + wasm)
+.github/pull_request_template.md   review checklist
+lefthook.yml                       pre-commit: fmt, clippy, typos, dprint; pre-push: test, deny; commit-msg: Conventional Commits
+renovate.json                      grouped weekly updates; automerge patch
+rust-toolchain.toml  rustfmt.toml  clippy.toml  deny.toml  dprint.json  _typos.toml
 ```
