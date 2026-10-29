@@ -4,10 +4,11 @@ All code here is written by AI agents. These rules are binding; a review checks 
 
 Source of truth, read in this order before changing anything:
 
-1. `STACK.md`: stack, layout, conventions, commands, quality gates, **Rules for agents**, **Engineering principles**.
+1. `STACK.md`: index and commands; then `docs/stack/rules-for-agents.md` and `docs/stack/layout.md`, plus the topic you touch (`docs/stack/README.md`).
 2. `SPEC.md`: what the game does (requirements `FR-*`, `NFR-*`).
 3. `DESIGN.md`: visual language.
-4. `docs/adr/`: why decisions were made. Read the ADRs touching the area you change.
+4. `docs/principles/README.md`: how code is written; read the files for the area you change.
+5. `docs/adr/`: why decisions were made. Read the ADRs touching the area you change.
 
 ## Workflow
 
