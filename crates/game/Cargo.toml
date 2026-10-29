@@ -16,8 +16,17 @@ voxel-gen.workspace = true
 voxel-mesh.workspace = true
 platform.workspace = true
 bevy.workspace = true
+tracing.workspace = true
 avian3d.workspace = true
 leafwing-input-manager.workspace = true
 
 [features]
 profile = []
+
+[lib]
+name = "game"
+path = "src/lib.rs"
+
+[[bin]]
+name = "game"
+path = "src/main.rs"

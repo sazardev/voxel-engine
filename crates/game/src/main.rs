@@ -1,3 +1,8 @@
-//! Composition root. Wires adapters into the core; nothing else builds infrastructure (ADR 0002).
+//! Binary entry point: window, renderer and the game plugin.
 
-fn main() {}
+use bevy::prelude::*;
+use game::GamePlugin;
+
+fn main() -> AppExit {
+    App::new().add_plugins((DefaultPlugins, GamePlugin)).run()
+}
