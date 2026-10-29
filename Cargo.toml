@@ -14,6 +14,9 @@ voxel-core = { path = "crates/voxel-core" }
 voxel-gen = { path = "crates/voxel-gen" }
 voxel-mesh = { path = "crates/voxel-mesh" }
 platform = { path = "crates/platform" }
+bevy = "0.20"
+avian3d = "0.8"
+leafwing-input-manager = "0.22"
 
 [workspace.lints.rust]
 # Unsafe lives only in documented modules that opt in with `#![allow(unsafe_code)]` and a SAFETY comment.

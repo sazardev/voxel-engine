@@ -11,6 +11,8 @@ targets = [
 [advisories]
 version = 2
 yanked = "deny"
+# ttf-parser is unmaintained and has no replacement; it comes in through Bevy text. Revisit when Bevy drops it.
+ignore = ["RUSTSEC-2026-0192"]
 
 [licenses]
 version = 2
@@ -26,6 +28,7 @@ allow = [
   "CC0-1.0",
   "MPL-2.0",
   "BSL-1.0",
+  "MIT-0",
 ]
 
 [licenses.private]
@@ -35,8 +38,8 @@ ignore = true
 multiple-versions = "warn"
 wildcards = "deny"
 allow-wildcard-paths = true
-# Bevy types stay out of the pure crates (ADR 0002).
-deny = [{ crate = "bevy", wrappers = ["game", "platform"] }]
+# Bevy types stay out of the pure crates (ADR 0002); only game, platform and the Bevy plugins may depend on it.
+deny = [{ crate = "bevy", wrappers = ["game", "platform", "avian3d", "bevy_transform_interpolation", "leafwing-input-manager"] }]
 
 [sources]
 unknown-registry = "deny"
