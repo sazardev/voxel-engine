@@ -21,7 +21,7 @@ runs on a phone with cheap light and on a desktop GPU with ray-marched light. Ev
 | Lighting (high tier) | Voxel-grid ray marching for shadows, AO and one bounce of GI, temporal accumulation + denoise                                                       | The Teardown-like glow of light in a voxel world                      |
 | Physics              | `avian3d` for bodies, voxel DDA for world queries                                                                                                   | World is a grid                                                       |
 | Touch and input      | `leafwing-input-manager` + on-screen controls                                                                                                       | Rebindable keys, gamepad and touch share actions                      |
-| Save                 | `bincode` + `zstd` chunk files; IndexedDB on web, app storage on mobile                                                                             | Same format, per-platform storage                                     |
+| Save                 | `postcard` (serde) chunk files, compressed (compressor chosen in the save ADR); IndexedDB on web, app storage on mobile                             | Same format, per-platform storage                                     |
 | Build                | `cargo`, `trunk` or `wasm-bindgen` (web), `cargo-apk`/`cargo-ndk` (Android), Xcode project (iOS)                                                    | Standard Rust per-target tooling                                      |
 | Testing              | `cargo test` headless `App` and pure crates                                                                                                         | Rules without a window                                                |
 | Post-processing      | HDR (16-bit float) scene, TAA, bloom, depth of field, per-object motion blur, filmic tone mapping (ACES or AgX), 3D LUT color grading               | Cinematic image from one ordered chain                                |
@@ -130,6 +130,7 @@ renovate.json                  extends config:recommended; schedule; packageRule
 
 ## Testing
 
+- `guard` crate: architecture tests over the source tree (see ADR 0007).
 - Pure crates: unit and property tests (edits then reads agree, meshing leaves no holes, seeds are deterministic).
 - Headless `App` tests for streaming, edits, save/load round trips and tier selection from fake capability probes.
 - Golden-image test per tier on a fixed seed and camera; Low and Mid also run in CI.
@@ -170,6 +171,8 @@ renovate.json                  extends config:recommended; schedule; packageRule
 - Keep one rig for first and third person with a mode switch; do not fork the player controller.
 - Never weaken or skip a CI step to make a change pass.
 - A new quality gate is added to the Commands table and to `ci.yml` in the same change.
+- Architecture rules (file size, no `utils`, pure crates, no network, no platform branching in gameplay) are enforced by the `guard` crate inside `cargo test --workspace`; a new rule becomes a new guard test, not a prose-only rule.
+- Crate dependency direction is enforced by `cargo deny` bans; a new crate adds its ban in the same change.
 - Never put secrets in workflow files; use repository or environment secrets.
 - Never bypass hooks with `--no-verify`.
 - Commit messages follow Conventional Commits (`feat(scope): …`, `fix(scope): …`).

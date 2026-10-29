@@ -13,3 +13,5 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0003 | Hooks: fast pre-commit, tests on pre-push       | accepted |
 | 0004 | Defer Bevy and engine crates to the first feature | superseded by 0005 |
 | 0005 | Engine dependency versions                      | accepted |
+| 0006 | Serialization: postcard, compression deferred   | accepted |
+| 0007 | Guard rails: architecture tests and lint policy | accepted |
