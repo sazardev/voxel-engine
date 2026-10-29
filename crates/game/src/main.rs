@@ -4,5 +4,12 @@ use bevy::prelude::*;
 use game::GamePlugin;
 
 fn main() -> AppExit {
-    App::new().add_plugins((DefaultPlugins, GamePlugin)).run()
+    let mut app = App::new();
+    app.add_plugins((DefaultPlugins, GamePlugin));
+    #[cfg(feature = "profile")]
+    app.add_plugins((
+        bevy::diagnostic::FrameTimeDiagnosticsPlugin::default(),
+        bevy::diagnostic::LogDiagnosticsPlugin::default(),
+    ));
+    app.run()
 }
