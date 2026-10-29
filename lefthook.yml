@@ -7,7 +7,7 @@ pre-commit:
       run: cargo fmt --all --check
     - name: lint
       glob: "*.{rs,toml}"
-      run: cargo clippy --workspace --all-targets -- -D warnings
+      run: cargo clippy --workspace --all-targets --all-features -- -D warnings
     - name: spelling
       run: typos {staged_files}
     - name: docs-format
@@ -17,7 +17,7 @@ pre-commit:
 pre-push:
   jobs:
     - name: test
-      run: cargo test --workspace
+      run: cargo test --workspace --all-features
     - name: deny
       run: cargo deny check
 

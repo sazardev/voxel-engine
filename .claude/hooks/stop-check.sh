@@ -12,7 +12,7 @@ cd "$CLAUDE_PROJECT_DIR" || exit 0
 
 output=$( (
   cargo fmt --all --check &&
-    cargo clippy --workspace --all-targets -- -D warnings &&
+    cargo clippy --workspace --all-targets --all-features -- -D warnings &&
     typos &&
     dprint check
 ) 2>&1) || {

@@ -4,7 +4,7 @@
 
 ## Checklist (reviewers verify)
 
-- [ ] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`, `cargo test --workspace`, `cargo deny check` pass
+- [ ] `cargo fmt --all --check`, `cargo clippy --workspace --all-targets --all-features -- -D warnings`, `cargo test --workspace --all-features`, `cargo deny check` pass
 - [ ] Every changed behaviour has a test in this change; bug fixes have a regression test
 - [ ] New or changed decision has an ADR; `STACK.md` / `SPEC.md` updated if affected
 - [ ] No Bevy in `voxel-*`; no platform branching in gameplay; no network; no `utils`/`helpers`
