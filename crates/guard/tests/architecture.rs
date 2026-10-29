@@ -207,3 +207,23 @@ fn every_adr_is_indexed_and_has_the_required_sections() {
         &problems,
     );
 }
+
+#[test]
+fn player_code_never_depends_on_developer_tools() {
+    let allowed = ["lib.rs", "main.rs", "run_mode.rs", "dev.rs"];
+    let files: Vec<_> = source_files(|name| name == "game")
+        .into_iter()
+        .filter(|(_, path)| {
+            let in_dev_folder = path.components().any(|part| part.as_os_str() == "dev");
+            let file_name = path
+                .file_name()
+                .map(|name| name.to_string_lossy().into_owned());
+            !in_dev_folder && !file_name.is_some_and(|name| allowed.contains(&name.as_str()))
+        })
+        .collect();
+    let forbidden = ["dev::", "feature = \"dev\"", "DevSettings", "DevPlugin"];
+    assert_none(
+        "Developer tools are compiled out of player builds: only lib.rs, main.rs, run_mode.rs and game/src/dev may mention them",
+        &violations_matching(&files, &forbidden, true),
+    );
+}
