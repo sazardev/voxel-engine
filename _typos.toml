@@ -1,0 +1,6 @@
+[files]
+extend-exclude = ["Cargo.lock", ".serena/**", "target/**"]
+
+[default.extend-words]
+LOD = "LOD"
+lod = "lod"

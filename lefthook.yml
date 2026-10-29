@@ -8,6 +8,11 @@ pre-commit:
     - name: lint
       glob: "*.{rs,toml}"
       run: cargo clippy --workspace --all-targets -- -D warnings
+    - name: spelling
+      run: typos {staged_files}
+    - name: docs-format
+      glob: "*.{md,toml,json}"
+      run: dprint check {staged_files}
 
 pre-push:
   jobs:
