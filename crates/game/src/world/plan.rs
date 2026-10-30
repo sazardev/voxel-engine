@@ -10,7 +10,7 @@ use super::settings::WorldSettings;
 use super::streaming::StreamPlan;
 
 /// Where the world streams around, in world units. The camera or player moves it.
-#[derive(Debug, Default, Clone, Copy, Resource)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Resource)]
 pub struct StreamFocus(pub Vec3);
 
 /// The plan the loading systems follow.

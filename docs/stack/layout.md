@@ -16,13 +16,14 @@ crates/
       main.rs                      window + renderer + GamePlugin
       run_mode.rs                  RunMode (Player or Dev) and the log filter per mode
       dev/                         developer tools, compiled only with `--features dev` (overlay, hotkeys)
-      camera.rs                    MainCamera: a fixed overview for now; _planned_: the FR-16 rig
+      camera/                      MainCamera and the one rig for first and third person (FR-16), look, cursor capture
       environment/                 Environment resource: time, weather (single source for light, fog, sky); daylight, sun
       render/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
         passes/                    _planned_: sun_shadows, ssao, voxel_rt (high), fog, bloom, post
       world/                       streaming plan, voxel data, chunk meshes and colors; _planned_: edit queue, save
-      player/                      _planned_: first_person.rs, third_person.rs, touch.rs
+      input.rs                     PlayerAction and default bindings (keyboard, mouse, gamepad)
+      player/                      player body, fixed-step movement against the grid, spawn; _planned_: touch
       ui/                          _planned_: HUD, menus (scale for touch targets)
 targets/
   android/  ios/  web/             _planned_: manifests, icons, index.html, service worker

@@ -33,6 +33,16 @@ impl ChunkVoxels {
         self.chunks.get(&pos).cloned()
     }
 
+    /// True when world voxel `voxel` is solid or not loaded: gameplay treats the unknown as a
+    /// wall, so nothing falls through a world that is still streaming.
+    #[must_use]
+    pub fn blocks(&self, voxel: [i64; 3]) -> bool {
+        ChunkPos::split(voxel).is_none_or(|(chunk, local)| {
+            self.get(chunk)
+                .is_none_or(|chunk| !chunk.get(local).is_air())
+        })
+    }
+
     #[must_use]
     pub fn contains(&self, pos: ChunkPos) -> bool {
         self.chunks.contains_key(&pos)

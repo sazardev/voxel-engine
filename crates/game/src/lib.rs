@@ -4,6 +4,8 @@ pub mod camera;
 #[cfg(feature = "dev")]
 pub mod dev;
 pub mod environment;
+pub mod input;
+pub mod player;
 pub mod render;
 mod run_mode;
 pub mod world;
@@ -12,6 +14,8 @@ use bevy::prelude::*;
 
 use camera::CameraPlugin;
 use environment::EnvironmentPlugin;
+use input::InputPlugin;
+use player::PlayerPlugin;
 pub use run_mode::RunMode;
 use world::WorldPlugin;
 
@@ -22,8 +26,14 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((EnvironmentPlugin, WorldPlugin, CameraPlugin))
-            .add_systems(Startup, announce_startup);
+        app.add_plugins((
+            EnvironmentPlugin,
+            InputPlugin,
+            WorldPlugin,
+            PlayerPlugin,
+            CameraPlugin,
+        ))
+        .add_systems(Startup, announce_startup);
     }
 }
 
@@ -38,10 +48,14 @@ mod tests {
     #[test]
     fn game_plugin_runs_a_frame_without_a_window() {
         let mut app = App::new();
-        app.add_plugins((MinimalPlugins, bevy::asset::AssetPlugin::default()))
-            .init_asset::<Mesh>()
-            .init_asset::<StandardMaterial>()
-            .add_plugins(GamePlugin);
+        app.add_plugins((
+            MinimalPlugins,
+            bevy::asset::AssetPlugin::default(),
+            bevy::input::InputPlugin,
+        ))
+        .init_asset::<Mesh>()
+        .init_asset::<StandardMaterial>()
+        .add_plugins(GamePlugin);
 
         app.update();
     }
