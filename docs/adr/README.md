@@ -21,3 +21,4 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0011 | Own greedy mesher with AO, without block-mesh       | accepted           |
 | 0012 | Uniform chunk storage, content-based golden         | accepted           |
 | 0013 | Chunk jobs on the task pool, inline without threads | accepted           |
+| 0014 | Player collision and rays against the voxel grid    | accepted           |

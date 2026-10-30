@@ -17,6 +17,16 @@ impl ChunkPos {
     pub const fn new(x: i32, y: i32, z: i32) -> Self {
         Self { x, y, z }
     }
+
+    /// The chunk holding world voxel `voxel`, and the voxel's place in it. `None` beyond the
+    /// range of chunk coordinates.
+    #[must_use]
+    pub fn split(voxel: [i64; 3]) -> Option<(Self, LocalPos)> {
+        let edge = i64::try_from(CHUNK_EDGE).ok()?;
+        let [x, y, z] = voxel.map(|axis| i32::try_from(axis.div_euclid(edge)).ok());
+        let [lx, ly, lz] = voxel.map(|axis| u8::try_from(axis.rem_euclid(edge)).ok());
+        Some((Self::new(x?, y?, z?), LocalPos::new(lx?, ly?, lz?).ok()?))
+    }
 }
 
 /// Position of a voxel inside one chunk. Always in bounds once constructed.
@@ -98,6 +108,15 @@ mod tests {
         for (expected_index, pos) in positions.iter().enumerate() {
             assert_eq!(pos.index(), expected_index);
         }
+    }
+
+    #[test]
+    fn splits_world_voxels_into_chunk_and_local_position() {
+        let (chunk, local) = ChunkPos::split([33, -1, -32]).expect("in range");
+
+        assert_eq!(chunk, ChunkPos::new(1, -1, -1));
+        assert_eq!((local.x(), local.y(), local.z()), (1, 31, 0));
+        assert_eq!(ChunkPos::split([i64::MAX, 0, 0]), None);
     }
 
     #[test]
