@@ -21,17 +21,41 @@ impl ValueNoise {
     pub fn sample(self, x: i64, z: i64) -> i64 {
         let (cell_x, tx) = self.split(x);
         let (cell_z, tz) = self.split(z);
-        let corner = |dx, dz| {
+        blend(self.corners(cell_x, cell_z), tx, tz)
+    }
+
+    /// Adds `amplitude * sample(x, z)` to `sums` for the `side × side` columns from
+    /// (`origin_x`, `origin_z`), indexed `z * side + x`. Same values as [`Self::sample`], but
+    /// each lattice cell's corners are hashed once per row instead of four times per column.
+    pub fn accumulate_grid(self, origin: (i64, i64), side: i64, amplitude: i64, sums: &mut [i64]) {
+        let columns: Vec<(i64, i64)> = (origin.0..origin.0 + side).map(|x| self.split(x)).collect();
+        let rows = (origin.1..origin.1 + side).map(|z| self.split(z));
+        for ((cell_z, tz), row_sums) in rows.zip(sums.chunks_mut(columns.len())) {
+            let mut cached: Option<(i64, [i64; 4])> = None;
+            for (&(cell_x, tx), sum) in columns.iter().zip(row_sums) {
+                let corners = match cached {
+                    Some((cell, corners)) if cell == cell_x => corners,
+                    _ => {
+                        let corners = self.corners(cell_x, cell_z);
+                        cached = Some((cell_x, corners));
+                        corners
+                    }
+                };
+                *sum += blend(corners, tx, tz) * amplitude;
+            }
+        }
+    }
+
+    /// Lattice values at the corners of a cell: (0, 0), (1, 0), (0, 1), (1, 1).
+    fn corners(self, cell_x: i64, cell_z: i64) -> [i64; 4] {
+        [(0, 0), (1, 0), (0, 1), (1, 1)].map(|(dx, dz)| {
             i64::from(lattice_value(
                 self.seed,
                 self.salt,
                 cell_x + dx,
                 cell_z + dz,
             ))
-        };
-        let near = lerp(corner(0, 0), corner(1, 0), tx);
-        let far = lerp(corner(0, 1), corner(1, 1), tx);
-        lerp(near, far, tz)
+        })
     }
 
     /// Lattice cell containing `coordinate` and the smoothed position inside it, in `0..=ONE`.
@@ -45,6 +69,15 @@ impl ValueNoise {
 /// Smoothstep `3t² - 2t³`: zero slope at cell edges, so octaves join without creases.
 fn fade(t: i64) -> i64 {
     (((t * t) >> FRACTION_BITS) * (3 * ONE - 2 * t)) >> FRACTION_BITS
+}
+
+/// Bilinear blend of a cell's corners at smoothed position (`tx`, `tz`).
+fn blend([near_low, near_high, far_low, far_high]: [i64; 4], tx: i64, tz: i64) -> i64 {
+    lerp(
+        lerp(near_low, near_high, tx),
+        lerp(far_low, far_high, tx),
+        tz,
+    )
 }
 
 fn lerp(from: i64, to: i64, t: i64) -> i64 {
@@ -76,6 +109,21 @@ mod tests {
     }
 
     proptest! {
+        #[test]
+        fn the_grid_matches_sampling_each_column(
+            seed: u64, x in -1_000_000i64..1_000_000, z in -1_000_000i64..1_000_000, cell_bits in 2u32..=8,
+        ) {
+            let noise = ValueNoise { seed, salt: 7, cell_bits };
+            let mut sums = vec![0; 16 * 16];
+
+            noise.accumulate_grid((x, z), 16, 3, &mut sums);
+
+            for (index, &sum) in sums.iter().enumerate() {
+                let (dx, dz) = (i64::try_from(index % 16).expect("small"), i64::try_from(index / 16).expect("small"));
+                prop_assert_eq!(sum, 3 * noise.sample(x + dx, z + dz));
+            }
+        }
+
         #[test]
         fn stays_in_range_and_changes_slowly(seed: u64, x in any::<i32>(), z in any::<i32>(), cell_bits in 2u32..=8) {
             let noise = ValueNoise { seed, salt: 0, cell_bits };

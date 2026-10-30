@@ -1,6 +1,6 @@
 use voxel_core::{CHUNK_EDGE, Chunk, ChunkPos};
 
-use crate::heightmap::{MAX_SURFACE_HEIGHT, surface_height};
+use crate::heightmap::{MAX_SURFACE_HEIGHT, MIN_SURFACE_HEIGHT, column_heights, surface_height};
 use crate::palette::TerrainPalette;
 use crate::seed::WorldSeed;
 
@@ -45,20 +45,20 @@ impl TerrainGenerator {
         if bottom > MAX_SURFACE_HEIGHT {
             return Chunk::empty();
         }
-        let heights = self.column_heights(pos);
+        // The shallowest possible depth of this chunk's top voxel: deep enough means all stone.
+        let top = bottom + EDGE - 1;
+        if self.palette.at_depth(MIN_SURFACE_HEIGHT - top) == self.palette.stone {
+            return Chunk::from_fn(|_| self.palette.stone);
+        }
+        let heights = column_heights(
+            self.seed,
+            (i64::from(pos.x) * EDGE, i64::from(pos.z) * EDGE),
+            EDGE,
+        );
         Chunk::from_fn(|local| {
             let column = usize::from(local.z()) * CHUNK_EDGE + usize::from(local.x());
             self.palette
                 .at_depth(heights[column] - (bottom + i64::from(local.y())))
         })
-    }
-
-    /// Surface height of each column of the chunk, indexed `z * CHUNK_EDGE + x`.
-    fn column_heights(&self, pos: ChunkPos) -> Vec<i64> {
-        let (origin_x, origin_z) = (i64::from(pos.x) * EDGE, i64::from(pos.z) * EDGE);
-        (0..EDGE)
-            .flat_map(|z| (0..EDGE).map(move |x| (origin_x + x, origin_z + z)))
-            .map(|(x, z)| self.surface_height(x, z))
-            .collect()
     }
 }
