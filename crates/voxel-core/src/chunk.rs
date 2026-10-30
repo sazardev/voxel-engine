@@ -22,6 +22,14 @@ impl Chunk {
         }
     }
 
+    /// Builds a chunk by asking `voxel_at` for every position. Generators use this.
+    #[must_use]
+    pub fn from_fn(voxel_at: impl FnMut(LocalPos) -> VoxelId) -> Self {
+        Self {
+            voxels: LocalPos::all().map(voxel_at).collect(),
+        }
+    }
+
     #[must_use]
     pub fn get(&self, pos: LocalPos) -> VoxelId {
         self.voxels[pos.index()]
@@ -55,6 +63,15 @@ mod tests {
 
         assert!(chunk.get(local(0, 0, 0)).is_air());
         assert!(chunk.get(local(31, 31, 31)).is_air());
+    }
+
+    #[test]
+    fn from_fn_stores_what_the_function_returns_at_each_position() {
+        let chunk = Chunk::from_fn(|pos| VoxelId(u16::from(pos.y())));
+
+        assert_eq!(chunk.get(local(5, 0, 9)), VoxelId(0));
+        assert_eq!(chunk.get(local(0, 17, 31)), VoxelId(17));
+        assert_eq!(chunk.get(local(31, 31, 0)), VoxelId(31));
     }
 
     #[test]
