@@ -1,5 +1,6 @@
 use voxel_core::VoxelId;
 
+use crate::face::Face;
 use crate::quad::Quad;
 
 /// Triangles of a quad split along its 0-2 or 1-3 diagonal, wound counter-clockwise as seen
@@ -44,20 +45,31 @@ impl MeshBuffers {
         self.indices.is_empty()
     }
 
+    fn push_quad(&mut self, quad: &Quad) {
+        self.push_face(quad.face, corners(quad), quad.voxel, quad.ao);
+    }
+
+    /// Adds one rectangular face given its corners in quad corner order (u0 v0, u1 v0, u1 v1,
+    /// u0 v1) on the face's plane axes, winding it to face out and splitting it along its darker
+    /// diagonal so occlusion does not show a triangle seam.
     #[expect(
         clippy::cast_possible_truncation,
-        reason = "a chunk mesh has at most 6 * 32^3 * 4 vertices, far below u32::MAX"
+        reason = "a chunk or patch mesh has far fewer than u32::MAX vertices"
     )]
-    fn push_quad(&mut self, quad: &Quad) {
+    pub(crate) fn push_face(
+        &mut self,
+        face: Face,
+        corners: [[f32; 3]; 4],
+        voxel: VoxelId,
+        ao: [u8; 4],
+    ) {
         let base = self.positions.len() as u32;
-        let normal = quad.face.normal().map(f32::from);
-        self.positions.extend(corners(quad));
-        self.normals.extend([normal; 4]);
-        self.ao.extend(quad.ao);
-        self.voxels.extend([quad.voxel; 4]);
-        let [a0, a1, a2, a3] = quad.ao.map(u32::from);
-        // Split along the darker diagonal so occlusion does not show a triangle seam.
-        let triangles = match (a0 + a2 <= a1 + a3, quad.face.is_positive()) {
+        self.positions.extend(corners);
+        self.normals.extend([face.normal().map(f32::from); 4]);
+        self.ao.extend(ao);
+        self.voxels.extend([voxel; 4]);
+        let [a0, a1, a2, a3] = ao.map(u32::from);
+        let triangles = match (a0 + a2 <= a1 + a3, face.is_positive()) {
             (true, true) => SPLIT_02,
             (false, true) => SPLIT_13,
             (true, false) => SPLIT_02_REVERSED,
