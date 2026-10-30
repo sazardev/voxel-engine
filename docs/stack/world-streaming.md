@@ -9,5 +9,6 @@ How chunks load, cull and fade with bounded work per frame.
 Current implementation (`crates/game/src/world/`):
 
 - A `StreamPlan` around the `StreamFocus` column lists the chunks to mesh (within the view radius, on the layers that can hold the surface) and the voxel data to keep (one more chunk around them, so every meshed chunk has its 26 neighbours). Both lists are nearest first; the plan changes only when the focus enters another chunk column.
-- Each frame generates at most `GENERATE_PER_FRAME` chunks and meshes and uploads at most `MESH_PER_FRAME`. Data and meshes outside the plan are dropped, so memory is bounded by the view radius.
-- The work runs on the main thread with these budgets, which is also the single-thread web path. Moving it to a task pool on threaded devices comes when a measurement shows the budgets are too slow.
+- Generation and meshing run as jobs on the task pool, or inline on devices without threads (ADR 0013). Every queue is bounded by a `StreamBudget`: jobs started per frame, jobs in flight and mesh uploads per frame. Data, jobs and meshes outside the plan are dropped, so memory is bounded by the view radius.
+- Uniform chunks hold no voxel array (ADR 0012), and uniform air or buried solid chunks are never meshed.
+- Measured (release, headless, radius 6): 35 ms and 65 frames to stream with threads, 134 ms and 132 frames inline; worst frame about 1.4 ms; 14.7 MB of voxel data.
