@@ -55,6 +55,15 @@ impl TerrainGenerator {
             (i64::from(pos.x) * EDGE, i64::from(pos.z) * EDGE),
             EDGE,
         );
+        // Most chunks of a column lie wholly above or below its surface: no voxel to fill.
+        let lowest = heights.iter().copied().min().unwrap_or(MIN_SURFACE_HEIGHT);
+        let highest = heights.iter().copied().max().unwrap_or(MAX_SURFACE_HEIGHT);
+        if bottom > highest {
+            return Chunk::empty();
+        }
+        if self.palette.at_depth(lowest - top) == self.palette.stone {
+            return Chunk::uniform(self.palette.stone);
+        }
         Chunk::from_fn(|local| {
             let column = usize::from(local.z()) * CHUNK_EDGE + usize::from(local.x());
             self.palette
