@@ -12,3 +12,4 @@ Current implementation (`crates/game/src/world/`):
 - Generation and meshing run as jobs on the task pool, or inline on devices without threads (ADR 0013). Every queue is bounded by a `StreamBudget`: jobs started per frame, jobs in flight and mesh uploads per frame. Data, jobs and meshes outside the plan are dropped, so memory is bounded by the view radius.
 - Uniform chunks hold no voxel array (ADR 0012), and uniform air or buried solid chunks are never meshed.
 - Measured (release, headless, radius 6): 35 ms and 65 frames to stream with threads, 134 ms and 132 frames inline; worst frame about 1.4 ms; 14.7 MB of voxel data.
+- Sprinting (6.5 m/s, 60 fps, 20 s), main-thread streaming work per frame: with threads mean 0.28 ms, p99 0.54 ms, worst 1.2 ms; inline mean 0.32 ms, p99 1.14 ms, worst 1.44 ms. The quality gate allows no frame above 33 ms while walking at full speed.
