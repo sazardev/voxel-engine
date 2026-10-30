@@ -20,7 +20,7 @@ crates/
       render/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
         passes/                    _planned_: sun_shadows, ssao, voxel_rt (high), fog, bloom, post
-      world/                       _planned_: streaming, edit queue, save
+      world/                       streaming plan, voxel data, chunk meshes and colors; _planned_: edit queue, save
       player/                      _planned_: first_person.rs, third_person.rs, touch.rs
       ui/                          _planned_: HUD, menus (scale for touch targets)
 targets/
