@@ -33,10 +33,40 @@ impl TerrainGenerator {
         Self { seed, palette }
     }
 
+    /// The materials this generator builds the ground from.
+    #[must_use]
+    pub const fn palette(&self) -> TerrainPalette {
+        self.palette
+    }
+
     /// World height of the topmost solid voxel of column (`x`, `z`), in voxels.
     #[must_use]
     pub fn surface_height(&self, x: i64, z: i64) -> i64 {
         surface_height(self.seed, x, z)
+    }
+
+    /// Coarse surface heights for far terrain: `cells × cells` square cells of `cell` voxels
+    /// from voxel column `origin`, indexed `z * cells + x`. Each cell takes the highest voxel
+    /// column inside it, so coarse terrain never dips below the detailed one.
+    #[must_use]
+    pub fn cell_heights(&self, origin: (i64, i64), cell: i64, cells: usize) -> Vec<i64> {
+        let cells_i64 = i64::try_from(cells).unwrap_or(0);
+        let columns = column_heights(self.seed, origin, cells_i64 * cell);
+        let width = usize::try_from(cells_i64 * cell).unwrap_or(0);
+        let cell_width = usize::try_from(cell).unwrap_or(1);
+        (0..cells)
+            .flat_map(|z| (0..cells).map(move |x| (x, z)))
+            .map(|(x, z)| {
+                (0..cell_width)
+                    .flat_map(|dz| {
+                        (0..cell_width)
+                            .map(move |dx| (z * cell_width + dz) * width + x * cell_width + dx)
+                    })
+                    .map(|index| columns[index])
+                    .max()
+                    .unwrap_or(MIN_SURFACE_HEIGHT)
+            })
+            .collect()
     }
 
     #[must_use]

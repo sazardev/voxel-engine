@@ -118,6 +118,26 @@ proptest! {
 }
 
 proptest! {
+    #![proptest_config(ProptestConfig::with_cases(16))]
+
+    #[test]
+    fn a_coarse_cell_takes_its_highest_column(seed: u64, x in -100_000i64..100_000, z in -100_000i64..100_000, cell in 1i64..5) {
+        let terrain = generator(seed);
+
+        let heights = terrain.cell_heights((x, z), cell, 3);
+
+        for (index, &height) in heights.iter().enumerate() {
+            let (cx, cz) = (i64::try_from(index % 3).expect("small"), i64::try_from(index / 3).expect("small"));
+            let highest = (0..cell)
+                .flat_map(|dz| (0..cell).map(move |dx| (dx, dz)))
+                .map(|(dx, dz)| terrain.surface_height(x + cx * cell + dx, z + cz * cell + dz))
+                .max();
+            prop_assert_eq!(Some(height), highest);
+        }
+    }
+}
+
+proptest! {
     #![proptest_config(ProptestConfig::with_cases(8))]
 
     #[test]
