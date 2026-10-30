@@ -12,15 +12,15 @@ use voxel_gen::{GENERATOR_VERSION, TerrainGenerator, TerrainPalette, WorldSeed};
 const SEED: WorldSeed = WorldSeed(0x5EED_CAFE_F00D_0001);
 /// Surface chunks, underground, sky and far negative coordinates.
 const CHUNKS: [ChunkPos; 6] = [
-    ChunkPos::new(0, 0, 0),
     ChunkPos::new(0, 1, 0),
-    ChunkPos::new(0, 2, 0),
-    ChunkPos::new(-1, 1, 3),
-    ChunkPos::new(7, 2, -5),
-    ChunkPos::new(-123_456, 1, 987_654),
+    ChunkPos::new(0, 6, 0),
+    ChunkPos::new(0, 8, 0),
+    ChunkPos::new(-1, 7, 3),
+    ChunkPos::new(7, 14, -5),
+    ChunkPos::new(-123_456, 7, 987_654),
 ];
-const EXPECTED_VERSION: u32 = 1;
-const EXPECTED_DIGEST: u64 = 0x5949_e9b0_1cbd_93f7;
+const EXPECTED_VERSION: u32 = 2;
+const EXPECTED_DIGEST: u64 = 0x92d1_0fe8_f8f1_948d;
 
 /// FNV-1a: tiny, stable and specified, so the fixture does not depend on a hasher's version.
 fn fnv1a(digest: u64, bytes: &[u8]) -> u64 {

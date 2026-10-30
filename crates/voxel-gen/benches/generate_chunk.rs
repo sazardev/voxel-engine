@@ -8,7 +8,7 @@ use voxel_gen::{TerrainGenerator, TerrainPalette, WorldSeed};
 fn generate_surface_chunk(c: &mut Criterion) {
     let terrain = TerrainGenerator::new(WorldSeed(42), TerrainPalette::default());
     c.bench_function("generate a surface chunk", |b| {
-        b.iter(|| terrain.generate_chunk(black_box(ChunkPos::new(3, 2, -7))));
+        b.iter(|| terrain.generate_chunk(black_box(ChunkPos::new(3, 7, -7))));
     });
 }
 

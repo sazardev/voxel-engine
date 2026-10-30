@@ -3,18 +3,19 @@
 use crate::seed::WorldSeed;
 use crate::value_noise::{ONE, ValueNoise};
 
-/// Octaves as (lattice spacing in bits, amplitude in voxels), from broad hills to small bumps.
-/// Each one's steepest slope is `1.5 * amplitude / spacing` (about 0.28 here), so their sum
-/// stays under `MAX_SURFACE_STEP`.
-const OCTAVES: [(u32, i64); 5] = [(8, 48), (7, 24), (6, 12), (5, 6), (4, 3)];
-const TOTAL_AMPLITUDE: i64 = 48 + 24 + 12 + 6 + 3;
-const _: () = assert!(TOTAL_AMPLITUDE == octave_amplitude_sum());
+/// Octaves as (lattice spacing in bits, amplitude), in 25 cm voxels (ADR 0015): from hills
+/// 256 m across and 48 m high down to bumps 4 m across and 1 m high.
+/// Each one's steepest slope is `1.5 * amplitude / spacing` (0.28 for the first five, 0.375 for
+/// the last), so their sum, 1.78, stays under `MAX_SURFACE_STEP`.
+const OCTAVES: [(u32, i64); 6] = [(10, 192), (9, 96), (8, 48), (7, 24), (6, 12), (4, 4)];
+const TOTAL_AMPLITUDE: i64 = octave_amplitude_sum();
 
-/// The surface is never below this world height.
-pub const MIN_SURFACE_HEIGHT: i64 = 16;
-/// The surface is never above this world height.
+/// The surface is never below this world height, in voxels (16 m).
+pub const MIN_SURFACE_HEIGHT: i64 = 64;
+/// The surface is never above this world height, in voxels.
 pub const MAX_SURFACE_HEIGHT: i64 = MIN_SURFACE_HEIGHT + TOTAL_AMPLITUDE;
-/// Neighbouring columns differ in height by at most this many voxels: hills, never cliffs.
+/// Neighbouring columns differ in height by at most this many voxels (50 cm): hills the player
+/// walks up without jumping, never cliffs.
 pub const MAX_SURFACE_STEP: i64 = 2;
 
 const fn octave_amplitude_sum() -> i64 {

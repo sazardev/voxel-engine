@@ -1,7 +1,7 @@
 use voxel_core::VoxelId;
 
-/// Layers below the grass that are dirt before stone starts.
-const DIRT_DEPTH: i64 = 3;
+/// Layers below the grass that are dirt before stone starts: 1 m of 25 cm voxels.
+const DIRT_DEPTH: i64 = 4;
 
 /// The materials the ground is made of, and how they layer from the surface down.
 ///

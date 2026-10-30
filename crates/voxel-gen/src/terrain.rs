@@ -6,7 +6,7 @@ use crate::seed::WorldSeed;
 
 /// Version of the generation algorithm. Any change to generated voxels bumps it, because saves
 /// store only edits on top of what the generator produces (ADR 0010).
-pub const GENERATOR_VERSION: u32 = 1;
+pub const GENERATOR_VERSION: u32 = 2;
 
 #[expect(
     clippy::cast_possible_wrap,
