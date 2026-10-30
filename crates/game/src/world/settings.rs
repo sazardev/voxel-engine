@@ -1,4 +1,5 @@
 use bevy::prelude::Resource;
+use voxel_core::{CHUNK_EDGE, VOXEL_SIZE_METRES};
 use voxel_gen::WorldSeed;
 
 /// Seed of the world shown until new-game and save flows choose one (FR-29).
@@ -14,6 +15,22 @@ pub struct WorldSettings {
     /// Radius, in chunks, of the meshed area around the focus.
     pub view_radius: u32,
 }
+
+impl WorldSettings {
+    /// How far the streamed world reaches from the focus, in metres.
+    #[must_use]
+    pub fn view_distance_metres(&self) -> f32 {
+        #[expect(
+            clippy::cast_precision_loss,
+            reason = "view radii are a few dozen chunks, exact in f32"
+        )]
+        let chunks = self.view_radius as f32;
+        chunks * CHUNK_EDGE_METRES
+    }
+}
+
+#[expect(clippy::cast_precision_loss, reason = "CHUNK_EDGE is 32, exact in f32")]
+const CHUNK_EDGE_METRES: f32 = CHUNK_EDGE as f32 * VOXEL_SIZE_METRES;
 
 impl Default for WorldSettings {
     fn default() -> Self {

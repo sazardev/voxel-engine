@@ -32,6 +32,9 @@ pub struct Daylight {
     pub light_illuminance_lux: f32,
     pub ambient_color: Color,
     pub ambient_brightness: f32,
+    /// Sky at the horizon: the clear color and the fog color (DESIGN.md `distance-fog`). The
+    /// palette's `ambient` ramp doubles as the sky until the palette names one.
+    pub sky_color: Color,
 }
 
 /// How much of the day it is: 0 at night, 1 in full day, blended around sunrise and sunset.
@@ -57,6 +60,7 @@ pub fn daylight(environment: &Environment) -> Daylight {
         light_illuminance_lux: MOON_ILLUMINANCE_LUX.lerp(SUN_ILLUMINANCE_LUX, day),
         ambient_color: NIGHT_AMBIENT.mix(&DAY_AMBIENT, day).into(),
         ambient_brightness: NIGHT_AMBIENT_BRIGHTNESS.lerp(DAY_AMBIENT_BRIGHTNESS, day),
+        sky_color: NIGHT_AMBIENT.mix(&DAY_AMBIENT, day).into(),
     }
 }
 
@@ -95,6 +99,13 @@ mod tests {
         assert!(midnight.light_illuminance_lux < noon.light_illuminance_lux);
         assert!(midnight.ambient_brightness < noon.ambient_brightness);
         assert_eq!(midnight.light_color, Color::from(MOON_COLOR));
+    }
+
+    #[test]
+    fn the_sky_darkens_at_night() {
+        let (noon, midnight) = (at(0.5).sky_color.to_linear(), at(0.0).sky_color.to_linear());
+
+        assert!(midnight.blue < noon.blue && midnight.green < noon.green);
     }
 
     #[test]
