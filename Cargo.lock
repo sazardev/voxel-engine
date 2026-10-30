@@ -6472,6 +6472,8 @@ dependencies = [
 name = "voxel-mesh"
 version = "0.0.0"
 dependencies = [
+ "criterion 0.8.2",
+ "proptest",
  "voxel-core",
 ]
 
