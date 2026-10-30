@@ -42,7 +42,9 @@ pub fn lod_mesh(
         cells: CELLS,
         heights: &heights,
         top: palette.grass,
-        side: palette.dirt,
+        // Close up, a step shows the side of its grass voxel; far walls match that instead of
+        // reading as brown bands through the fog.
+        side: palette.grass,
         skirt,
         base,
     });
