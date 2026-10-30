@@ -11,7 +11,7 @@ mod memory_store;
 mod store;
 mod voxel;
 
-pub use chunk::{CHUNK_EDGE, CHUNK_VOLUME, Chunk};
+pub use chunk::{CHUNK_EDGE, CHUNK_VOLUME, Chunk, WrongVoxelCount};
 pub use clock::{Clock, FixedClock};
 pub use coords::{ChunkPos, LocalPos};
 pub use edit_error::EditError;

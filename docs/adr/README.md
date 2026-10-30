@@ -19,3 +19,4 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0009 | Dev mode as a compile-time feature                | accepted           |
 | 0010 | World generation in integer arithmetic            | accepted           |
 | 0011 | Own greedy mesher with AO, without block-mesh     | accepted           |
+| 0012 | Uniform chunk storage, content-based golden       | accepted           |

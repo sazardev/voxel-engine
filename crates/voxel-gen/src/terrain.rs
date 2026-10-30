@@ -48,7 +48,7 @@ impl TerrainGenerator {
         // The shallowest possible depth of this chunk's top voxel: deep enough means all stone.
         let top = bottom + EDGE - 1;
         if self.palette.at_depth(MIN_SURFACE_HEIGHT - top) == self.palette.stone {
-            return Chunk::from_fn(|_| self.palette.stone);
+            return Chunk::uniform(self.palette.stone);
         }
         let heights = column_heights(
             self.seed,

@@ -6453,6 +6453,7 @@ name = "voxel-core"
 version = "0.0.0"
 dependencies = [
  "criterion 0.8.2",
+ "postcard",
  "proptest",
  "serde",
  "thiserror 2.0.21",
