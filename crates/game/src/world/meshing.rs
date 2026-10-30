@@ -5,7 +5,7 @@ use std::collections::{HashMap, VecDeque};
 use std::sync::Arc;
 
 use bevy::prelude::*;
-use voxel_core::{CHUNK_EDGE, ChunkPos};
+use voxel_core::{CHUNK_EDGE, ChunkPos, VOXEL_SIZE_METRES};
 
 use super::jobs::{ChunkWorkers, Job};
 use super::mesh_job::{Neighbourhood, mesh_chunk};
@@ -146,7 +146,8 @@ pub(super) fn upload_meshes(
                     ChunkMesh(pos),
                     Mesh3d(mesh_assets.add(mesh)),
                     MeshMaterial3d(material.0.clone()),
-                    Transform::from_translation(chunk_origin(pos)),
+                    Transform::from_translation(chunk_origin(pos))
+                        .with_scale(Vec3::splat(VOXEL_SIZE_METRES)),
                 ))
                 .id()
         });
@@ -158,8 +159,9 @@ pub(super) fn upload_meshes(
     clippy::cast_precision_loss,
     reason = "chunk coordinates times 32 stay far below f32's exact integer range in play"
 )]
+/// Where the chunk's corner sits in the world, in metres; its mesh is in voxels and scaled.
 fn chunk_origin(pos: ChunkPos) -> Vec3 {
-    let edge = CHUNK_EDGE as f32;
+    let edge = CHUNK_EDGE as f32 * VOXEL_SIZE_METRES;
     Vec3::new(
         pos.x as f32 * edge,
         pos.y as f32 * edge,

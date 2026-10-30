@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use leafwing_input_manager::prelude::ActionState;
+use voxel_core::VOXEL_SIZE_METRES;
 
 use super::body::{Body, Look, Player};
 use super::kinematics::{BODY_HALF_WIDTH, BODY_HEIGHT};
@@ -24,10 +25,11 @@ pub(super) fn spawn_player(
     let (x, z) = (0, 0);
     #[expect(
         clippy::cast_precision_loss,
-        reason = "surface heights are a few hundred metres, exact in f32"
+        reason = "surface heights are a few hundred voxels, exact in f32"
     )]
-    let ground = terrain.0.surface_height(x, z) as f32 + 1.0;
-    let feet = Vec3::new(0.5, ground, 0.5);
+    let ground = (terrain.0.surface_height(x, z) + 1) as f32 * VOXEL_SIZE_METRES;
+    // Stand in the middle of voxel (x, z).
+    let feet = Vec3::new(0.5 * VOXEL_SIZE_METRES, ground, 0.5 * VOXEL_SIZE_METRES);
     focus.0 = feet;
     let model = (
         PlayerModel,

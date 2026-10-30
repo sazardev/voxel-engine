@@ -163,7 +163,8 @@ mod tests {
         let mut app = world_app(1);
         stream_until_meshed(&mut app);
 
-        app.world_mut().resource_mut::<StreamFocus>().0 = Vec3::new(32.0 * 10.0, 0.0, 0.0);
+        // Ten chunks of 8 m along x.
+        app.world_mut().resource_mut::<StreamFocus>().0 = Vec3::new(8.0 * 10.0 + 4.0, 0.0, 0.0);
         stream_until_meshed(&mut app);
 
         let meshes = chunk_meshes(&mut app);

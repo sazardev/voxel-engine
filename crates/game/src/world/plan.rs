@@ -3,13 +3,13 @@
 use std::ops::RangeInclusive;
 
 use bevy::prelude::*;
-use voxel_core::CHUNK_EDGE;
+use voxel_core::{CHUNK_EDGE, VOXEL_SIZE_METRES};
 use voxel_gen::{MAX_SURFACE_HEIGHT, MIN_SURFACE_HEIGHT};
 
 use super::settings::WorldSettings;
 use super::streaming::StreamPlan;
 
-/// Where the world streams around, in world units. The camera or player moves it.
+/// Where the world streams around, in metres. The player moves it.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Resource)]
 pub struct StreamFocus(pub Vec3);
 
@@ -33,7 +33,7 @@ fn surface_layers() -> RangeInclusive<i32> {
     reason = "focus coordinates are far inside i32 chunk range; floor() gives whole chunks"
 )]
 fn focus_column(focus: Vec3) -> (i32, i32) {
-    let edge = CHUNK_EDGE as f32;
+    let edge = CHUNK_EDGE as f32 * VOXEL_SIZE_METRES;
     (
         (focus.x / edge).floor() as i32,
         (focus.z / edge).floor() as i32,

@@ -2,7 +2,7 @@
 
 use bevy::prelude::*;
 use leafwing_input_manager::prelude::ActionState;
-use voxel_core::cast_ray;
+use voxel_core::{VOXEL_SIZE_METRES, cast_ray};
 
 use super::MainCamera;
 use crate::input::PlayerAction;
@@ -40,7 +40,8 @@ pub struct CameraRig {
 }
 
 /// How far from `from` along the unit vector `direction` the camera can go, up to `reach`,
-/// keeping its clearance from the first solid voxel.
+/// keeping its clearance from the first solid voxel. Distances in metres; `is_solid` answers
+/// for world voxels.
 #[must_use]
 pub fn arm_length(
     from: Vec3,
@@ -48,14 +49,11 @@ pub fn arm_length(
     reach: f32,
     is_solid: impl Fn([i64; 3]) -> bool,
 ) -> f32 {
-    cast_ray(
-        from.to_array(),
-        direction.to_array(),
-        reach + CAMERA_CLEARANCE,
-        is_solid,
-    )
-    .map_or(reach, |hit| {
-        (hit.distance - CAMERA_CLEARANCE).clamp(0.0, reach)
+    let grid_per_metre = 1.0 / VOXEL_SIZE_METRES;
+    let origin = (from * grid_per_metre).to_array();
+    let grid_reach = (reach + CAMERA_CLEARANCE) * grid_per_metre;
+    cast_ray(origin, direction.to_array(), grid_reach, is_solid).map_or(reach, |hit| {
+        (hit.distance / grid_per_metre - CAMERA_CLEARANCE).clamp(0.0, reach)
     })
 }
 
@@ -128,11 +126,12 @@ mod tests {
 
     #[test]
     fn a_wall_shortens_the_arm_and_keeps_the_camera_off_it() {
-        let wall_behind = |voxel: [i64; 3]| voxel[2] >= 2;
+        // Voxels from z = 2 m on are solid.
+        let wall_behind = |voxel: [i64; 3]| voxel[2] >= 8;
 
-        let length = arm_length(Vec3::new(0.5, 0.5, 0.5), Vec3::Z, ARM_LENGTH, wall_behind);
+        let length = arm_length(Vec3::new(0.1, 0.1, 0.1), Vec3::Z, ARM_LENGTH, wall_behind);
 
-        assert!((length - (1.5 - CAMERA_CLEARANCE)).abs() < 1e-4, "{length}");
+        assert!((length - (1.9 - CAMERA_CLEARANCE)).abs() < 1e-4, "{length}");
     }
 
     #[test]
