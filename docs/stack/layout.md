@@ -7,7 +7,7 @@ Cargo.toml                         workspace, shared dependencies and lints; pro
 crates/
   voxel-core/                      chunks, coordinates, edits, ports (ChunkStore, Clock) and their fakes (no Bevy)
   voxel-gen/                       seeded generation (pure, integer-only: ADR 0010): terrain heightmap, golden fixture
-  voxel-mesh/                      greedy meshing with per-vertex AO (ADR 0011), LOD meshes
+  voxel-mesh/                      greedy meshing with per-vertex AO (ADR 0011), height-field patches for LOD (ADR 0016)
   platform/                        capabilities (probe result), storage, input mapping, per-OS glue
   guard/                           architecture and docs tests only (ADR 0007)
   game/
@@ -21,7 +21,7 @@ crates/
       render/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
         passes/                    _planned_: sun_shadows, ssao, voxel_rt (high), fog, bloom, post
-      world/                       streaming plan, voxel data, chunk meshes and colors; _planned_: edit queue, save
+      world/                       streaming plan, LOD quadtree and patches, voxel data, chunk meshes, colors and tint; _planned_: edit queue, save
       input.rs                     PlayerAction and default bindings (keyboard, mouse, gamepad)
       player/                      player body, fixed-step movement against the grid, spawn; _planned_: touch
       ui/                          _planned_: HUD, menus (scale for touch targets)

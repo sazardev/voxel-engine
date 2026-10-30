@@ -13,13 +13,24 @@ use super::voxel_tint::TINT_SIZE;
 /// chunks.
 #[must_use]
 pub fn chunk_mesh(buffers: MeshBuffers, colors: &VoxelColors, origin: [i64; 3]) -> Mesh {
+    tinted_mesh(buffers, colors, origin, [1.0; 3])
+}
+
+/// Like [`chunk_mesh`] for meshes whose units are `scale` voxels per axis (coarse patches).
+#[must_use]
+pub fn tinted_mesh(
+    buffers: MeshBuffers,
+    colors: &VoxelColors,
+    origin: [i64; 3],
+    scale: [f32; 3],
+) -> Mesh {
     let vertex_colors: Vec<[f32; 4]> = buffers
         .voxels
         .iter()
         .zip(&buffers.ao)
         .map(|(&voxel, &ao)| colors.shaded(voxel, ao).to_f32_array())
         .collect();
-    let uvs = tint_uvs(&buffers.positions, &buffers.normals, origin);
+    let uvs = tint_uvs(&buffers.positions, &buffers.normals, origin, scale);
     Mesh::new(
         PrimitiveTopology::TriangleList,
         RenderAssetUsages::RENDER_WORLD,
@@ -37,7 +48,12 @@ pub fn chunk_mesh(buffers: MeshBuffers, colors: &VoxelColors, origin: [i64; 3]) 
     clippy::cast_precision_loss,
     reason = "the origin is reduced modulo the tint size (64) before the cast"
 )]
-fn tint_uvs(positions: &[[f32; 3]], normals: &[[f32; 3]], origin: [i64; 3]) -> Vec<[f32; 2]> {
+fn tint_uvs(
+    positions: &[[f32; 3]],
+    normals: &[[f32; 3]],
+    origin: [i64; 3],
+    scale: [f32; 3],
+) -> Vec<[f32; 2]> {
     let size = i64::from(TINT_SIZE);
     let offset = origin.map(|axis| axis.rem_euclid(size) as f32);
     positions
@@ -49,8 +65,8 @@ fn tint_uvs(positions: &[[f32; 3]], normals: &[[f32; 3]], origin: [i64; 3]) -> V
                 .unwrap_or(1);
             let (u, v) = ((axis + 1) % 3, (axis + 2) % 3);
             [
-                (position[u] + offset[u]) / size as f32,
-                (position[v] + offset[v]) / size as f32,
+                (position[u] * scale[u] + offset[u]) / size as f32,
+                (position[v] * scale[v] + offset[v]) / size as f32,
             ]
         })
         .collect()
@@ -89,8 +105,8 @@ mod uv_tests {
     fn neighbouring_chunks_continue_the_tint_pattern() {
         // The same world point seen from two chunks 32 voxels apart along x, on a +y face.
         let normal = [[0.0, 1.0, 0.0]];
-        let here = tint_uvs(&[[32.0, 5.0, 3.0]], &normal, [0, 0, 0]);
-        let next = tint_uvs(&[[0.0, 5.0, 3.0]], &normal, [32, 0, 0]);
+        let here = tint_uvs(&[[32.0, 5.0, 3.0]], &normal, [0, 0, 0], [1.0; 3]);
+        let next = tint_uvs(&[[0.0, 5.0, 3.0]], &normal, [32, 0, 0], [1.0; 3]);
 
         assert_eq!(here, next);
     }

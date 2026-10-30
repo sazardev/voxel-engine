@@ -35,6 +35,9 @@ impl ChunkWorkers {
                 meshing_starts: 16,
                 meshing_in_flight: 32,
                 mesh_uploads: 8,
+                lod_starts: 8,
+                lod_in_flight: 16,
+                lod_uploads: 4,
             },
             Self::Inline => StreamBudget {
                 generation_starts: 8,
@@ -42,6 +45,9 @@ impl ChunkWorkers {
                 meshing_starts: 4,
                 meshing_in_flight: 4,
                 mesh_uploads: 4,
+                lod_starts: 2,
+                lod_in_flight: 2,
+                lod_uploads: 2,
             },
         }
     }
@@ -56,6 +62,9 @@ pub struct StreamBudget {
     pub meshing_in_flight: usize,
     /// Meshes added to the asset store (and so uploaded to the GPU) per frame.
     pub mesh_uploads: usize,
+    pub lod_starts: usize,
+    pub lod_in_flight: usize,
+    pub lod_uploads: usize,
 }
 
 /// One unit of chunk work. Dropping a running job cancels it.

@@ -21,25 +21,37 @@ impl StreamPlan {
     /// `layers` (the chunk heights that can contain the surface).
     #[must_use]
     pub fn around(focus: (i32, i32), radius: u32, layers: RangeInclusive<i32>) -> Self {
-        let in_view =
-            |dx: i32, dz: i32| dx.unsigned_abs().pow(2) + dz.unsigned_abs().pow(2) <= radius.pow(2);
-        let reach = i32::try_from(radius).unwrap_or(i32::MAX - 1) + 1;
-        let mut mesh_columns = Vec::new();
-        let mut voxel_columns = Vec::new();
-        for dz in -reach..=reach {
-            for dx in -reach..=reach {
-                if in_view(dx, dz) {
-                    mesh_columns.push((dx, dz));
-                }
-                let touches_view = (-1..=1).any(|nz| (-1..=1).any(|nx| in_view(dx + nx, dz + nz)));
-                if touches_view {
-                    voxel_columns.push((dx, dz));
-                }
-            }
-        }
+        let reach = i32::try_from(radius).unwrap_or(i32::MAX / 2);
+        let columns = (-reach..=reach)
+            .flat_map(|dz| (-reach..=reach).map(move |dx| (dx, dz)))
+            .filter(|&(dx, dz)| {
+                dx.unsigned_abs().pow(2) + dz.unsigned_abs().pow(2) <= radius.pow(2)
+            })
+            .map(|(dx, dz)| (focus.0 + dx, focus.1 + dz))
+            .collect();
+        Self::for_columns(focus, columns, layers)
+    }
+
+    /// Plans exactly the detail `columns` given (absolute chunk columns), with voxel data for
+    /// them and every column next to them.
+    #[must_use]
+    pub fn for_columns(
+        focus: (i32, i32),
+        columns: Vec<(i32, i32)>,
+        layers: RangeInclusive<i32>,
+    ) -> Self {
+        let mut voxel_columns: Vec<(i32, i32)> = columns
+            .iter()
+            .flat_map(|&(x, z)| {
+                (-1..=1).flat_map(move |dz| (-1..=1).map(move |dx| (x + dx, z + dz)))
+            })
+            .collect::<HashSet<_>>()
+            .into_iter()
+            .collect();
+        voxel_columns.sort_unstable();
         let below = layers.start() - 1;
         let above = layers.end() + 1;
-        let meshes = nearest_first(focus, mesh_columns, &layers);
+        let meshes = nearest_first(focus, columns, &layers);
         let voxels = nearest_first(focus, voxel_columns, &(below..=above));
         Self {
             focus,
@@ -85,14 +97,13 @@ fn nearest_first(
     layers: &RangeInclusive<i32>,
 ) -> Vec<ChunkPos> {
     let mut columns = columns;
-    columns.sort_by_key(|&(dx, dz)| (dx * dx + dz * dz, dz, dx));
+    columns.sort_by_key(|&(x, z)| {
+        let (dx, dz) = (i64::from(x - focus.0), i64::from(z - focus.1));
+        (dx * dx + dz * dz, z, x)
+    });
     columns
         .into_iter()
-        .flat_map(|(dx, dz)| {
-            layers
-                .clone()
-                .map(move |y| ChunkPos::new(focus.0 + dx, y, focus.1 + dz))
-        })
+        .flat_map(|(x, z)| layers.clone().map(move |y| ChunkPos::new(x, y, z)))
         .collect()
 }
 

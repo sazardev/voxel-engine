@@ -3,6 +3,9 @@
 
 mod chunk_mesh;
 mod jobs;
+mod lod;
+mod lod_layout;
+mod lod_mesh;
 mod mesh_job;
 mod meshing;
 mod plan;
@@ -16,8 +19,10 @@ use bevy::prelude::*;
 use voxel_gen::{TerrainGenerator, TerrainPalette};
 
 pub use jobs::{ChunkWorkers, StreamBudget};
+pub use lod::{LodJobs, LodMesh, LodMeshes};
+pub use lod_layout::{LodLayout, LodPatch};
 pub use meshing::{ChunkMaterial, ChunkMesh, MeshJobs, MeshedChunks};
-pub use plan::{ActivePlan, StreamFocus};
+pub use plan::{ActiveLod, ActivePlan, StreamFocus};
 pub use settings::WorldSettings;
 pub use streaming::StreamPlan;
 pub use voxel_colors::VoxelColors;
@@ -39,6 +44,8 @@ impl Plugin for WorldPlugin {
             .init_resource::<MeshedChunks>()
             .init_resource::<GenerationJobs>()
             .init_resource::<MeshJobs>()
+            .init_resource::<LodMeshes>()
+            .init_resource::<LodJobs>()
             .init_resource::<VoxelColors>()
             .add_systems(Startup, (start_world, meshing::create_material))
             .add_systems(
@@ -51,6 +58,9 @@ impl Plugin for WorldPlugin {
                     voxels::start_generation,
                     meshing::start_meshing,
                     meshing::upload_meshes,
+                    lod::despawn_far_patches,
+                    lod::start_patches,
+                    lod::upload_patches,
                 )
                     .chain()
                     .run_if(resource_exists::<ActivePlan>),
@@ -61,7 +71,9 @@ impl Plugin for WorldPlugin {
 fn start_world(mut commands: Commands, settings: Res<WorldSettings>, focus: Res<StreamFocus>) {
     let terrain = TerrainGenerator::new(settings.seed, TerrainPalette::default());
     commands.insert_resource(Terrain(terrain));
-    commands.insert_resource(plan::initial_plan(&settings, *focus));
+    let (detail, lod) = plan::plans(&settings, *focus);
+    commands.insert_resource(detail);
+    commands.insert_resource(lod);
 }
 
 #[cfg(test)]
@@ -100,7 +112,14 @@ mod tests {
     fn fully_meshed(app: &App) -> bool {
         let plan = &app.world().resource::<ActivePlan>().0;
         let meshed = app.world().resource::<MeshedChunks>();
+        let lod = app.world().resource::<ActiveLod>();
+        let patches = app.world().resource::<LodMeshes>();
         plan.meshes().iter().all(|&pos| meshed.contains(pos))
+            && lod
+                .layout
+                .patches
+                .iter()
+                .all(|&patch| patches.contains(patch))
     }
 
     /// Runs frames until every planned chunk is meshed, checking the per-frame budgets each time.
@@ -170,10 +189,14 @@ mod tests {
         stream_until_meshed(&mut app);
 
         let meshes = chunk_meshes(&mut app);
+        let plan = &app.world().resource::<ActivePlan>().0;
         assert!(
-            meshes.iter().all(|pos| (9..=11).contains(&pos.x)),
+            meshes.iter().all(|&pos| plan.wants_mesh(pos) && pos.x > 5),
             "{meshes:?}"
         );
+        let mut patches = app.world_mut().query::<&LodMesh>();
+        let lod = app.world().resource::<ActiveLod>();
+        assert!(patches.iter(app.world()).all(|patch| lod.wants(patch.0)));
         let plan = &app.world().resource::<ActivePlan>().0;
         let voxels = app.world().resource::<ChunkVoxels>();
         assert_eq!(voxels.len(), plan.voxels().len());

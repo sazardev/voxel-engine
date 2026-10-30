@@ -23,3 +23,4 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0013 | Chunk jobs on the task pool, inline without threads | accepted           |
 | 0014 | Player collision and rays against the voxel grid    | accepted           |
 | 0015 | World voxels of 25 cm, model voxels of 12.5 cm      | accepted           |
+| 0016 | Level of detail: quadtree of height-field patches   | accepted           |

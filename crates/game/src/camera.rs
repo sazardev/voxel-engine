@@ -114,7 +114,14 @@ mod tests {
                 return;
             }
         }
-        panic!("the player never landed");
+        let mut query = app.world_mut().query_filtered::<&Body, With<Player>>();
+        let bodies: Vec<_> = query.iter(app.world()).collect();
+        let plan = &app.world().resource::<crate::world::ActivePlan>().0;
+        panic!(
+            "the player never landed: {bodies:?} focus {:?} meshes {}",
+            plan.focus(),
+            plan.meshes().len()
+        );
     }
 
     #[test]
