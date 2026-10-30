@@ -12,7 +12,6 @@ rust-version = "1.90"
 [workspace.dependencies]
 avian3d = "0.8"
 bevy = "0.20"
-block-mesh = "0.2"
 criterion = { version = "0.8", default-features = false, features = ["cargo_bench_support"] }
 leafwing-input-manager = "0.22"
 platform = { path = "crates/platform" }

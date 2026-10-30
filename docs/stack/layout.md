@@ -7,7 +7,7 @@ Cargo.toml                         workspace, shared dependencies and lints; pro
 crates/
   voxel-core/                      chunks, coordinates, edits, ports (ChunkStore, Clock) and their fakes (no Bevy)
   voxel-gen/                       seeded generation (pure, integer-only: ADR 0010): terrain heightmap, golden fixture
-  voxel-mesh/                      greedy meshing, AO bake, LOD meshes
+  voxel-mesh/                      greedy meshing with per-vertex AO (ADR 0011), LOD meshes
   platform/                        capabilities (probe result), storage, input mapping, per-OS glue
   guard/                           architecture and docs tests only (ADR 0007)
   game/

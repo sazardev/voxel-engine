@@ -11,6 +11,4 @@ description = "Greedy meshing, AO bake and LOD meshes. No engine types."
 workspace = true
 
 [dependencies]
-block-mesh.workspace = true
-thiserror.workspace = true
 voxel-core.workspace = true
