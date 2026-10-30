@@ -67,6 +67,7 @@ mod tests {
         app.add_plugins((MinimalPlugins, AssetPlugin::default()))
             .init_asset::<Mesh>()
             .init_asset::<StandardMaterial>()
+            .init_asset::<Image>()
             .insert_resource(TimeUpdateStrategy::ManualDuration(Duration::from_secs_f64(
                 1.0 / 64.0,
             )))

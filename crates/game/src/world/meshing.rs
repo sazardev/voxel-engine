@@ -11,6 +11,7 @@ use super::jobs::{ChunkWorkers, Job};
 use super::mesh_job::{Neighbourhood, mesh_chunk};
 use super::plan::ActivePlan;
 use super::voxel_colors::VoxelColors;
+use super::voxel_tint::tint_image;
 use super::voxels::ChunkVoxels;
 
 /// A rendered chunk.
@@ -55,9 +56,11 @@ impl MeshJobs {
 pub(super) fn create_material(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut images: ResMut<Assets<Image>>,
 ) {
     let material = materials.add(StandardMaterial {
         base_color: Color::WHITE,
+        base_color_texture: Some(images.add(tint_image())),
         perceptual_roughness: 0.9,
         ..default()
     });
@@ -112,7 +115,7 @@ pub(super) fn start_meshing(
         let colors = Arc::clone(&colors);
         jobs.running.insert(
             pos,
-            Job::start(*workers, move || mesh_chunk(&neighbourhood, &colors)),
+            Job::start(*workers, move || mesh_chunk(pos, &neighbourhood, &colors)),
         );
     }
 }

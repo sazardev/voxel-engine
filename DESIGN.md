@@ -77,6 +77,7 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 | -------------------- | ----------------------------------------------------------------- | ----------------------------- |
 | voxel-size           | 25 cm world, 12.5 cm models                                       | Terrain and buildings; models |
 | ao                   | baked per vertex, 4 levels, strength 0.35                         | Soft corner darkening         |
+| voxel-tint           | per-voxel brightness 0.84-1.0 within the ramp, hashed by position | Every cube reads on its own   |
 | shadow-color         | tinted by the ambient `fill` color, never pure black              | Depth and mood                |
 | hud-radius           | 4px (or 0 for a hard cube look)                                   | HUD panels                    |
 | outline              | optional 1px inverted-hull or edge detect                         | Selection, hover              |

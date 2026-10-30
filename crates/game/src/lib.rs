@@ -55,6 +55,7 @@ mod tests {
         ))
         .init_asset::<Mesh>()
         .init_asset::<StandardMaterial>()
+        .init_asset::<Image>()
         .add_plugins(GamePlugin);
 
         app.update();

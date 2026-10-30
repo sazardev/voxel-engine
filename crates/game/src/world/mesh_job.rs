@@ -3,7 +3,7 @@
 use std::sync::Arc;
 
 use bevy::mesh::Mesh;
-use voxel_core::{Chunk, ChunkPos};
+use voxel_core::{CHUNK_EDGE, Chunk, ChunkPos};
 use voxel_mesh::{MeshBuffers, PaddedChunk, mesh_quads};
 
 use super::chunk_mesh::chunk_mesh;
@@ -61,9 +61,14 @@ fn offsets() -> impl Iterator<Item = [i32; 3]> {
     (-1..=1).flat_map(|dz| (-1..=1).flat_map(move |dy| (-1..=1).map(move |dx| [dx, dy, dz])))
 }
 
-/// The render mesh of the neighbourhood's center chunk; `None` when it has no visible face.
+/// The render mesh of the neighbourhood's center chunk at `pos`; `None` when it has no visible
+/// face.
 #[must_use]
-pub fn mesh_chunk(neighbourhood: &Neighbourhood, colors: &VoxelColors) -> Option<Mesh> {
+pub fn mesh_chunk(
+    pos: ChunkPos,
+    neighbourhood: &Neighbourhood,
+    colors: &VoxelColors,
+) -> Option<Mesh> {
     if neighbourhood.is_trivially_empty().unwrap_or(true) {
         return None;
     }
@@ -71,7 +76,9 @@ pub fn mesh_chunk(neighbourhood: &Neighbourhood, colors: &VoxelColors) -> Option
         neighbourhood.at(offset)
     });
     let buffers = MeshBuffers::from_quads(&mesh_quads(&padded));
-    (!buffers.is_empty()).then(|| chunk_mesh(buffers, colors))
+    let edge = i64::try_from(CHUNK_EDGE).unwrap_or(32);
+    let origin = [pos.x, pos.y, pos.z].map(|axis| i64::from(axis) * edge);
+    (!buffers.is_empty()).then(|| chunk_mesh(buffers, colors, origin))
 }
 
 #[cfg(test)]
@@ -99,6 +106,7 @@ mod tests {
 
         assert!(
             mesh_chunk(
+                ChunkPos::new(0, 0, 0),
                 &neighbourhood(Chunk::empty(), &around),
                 &VoxelColors::default()
             )
@@ -112,6 +120,7 @@ mod tests {
 
         assert!(
             mesh_chunk(
+                ChunkPos::new(0, 0, 0),
                 &neighbourhood(stone.clone(), &stone),
                 &VoxelColors::default()
             )
@@ -124,6 +133,7 @@ mod tests {
         let stone = Chunk::uniform(VoxelId(3));
 
         let mesh = mesh_chunk(
+            ChunkPos::new(0, 0, 0),
             &neighbourhood(stone, &Chunk::empty()),
             &VoxelColors::default(),
         );

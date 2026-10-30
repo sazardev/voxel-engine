@@ -9,6 +9,7 @@ mod plan;
 mod settings;
 mod streaming;
 mod voxel_colors;
+mod voxel_tint;
 mod voxels;
 
 use bevy::prelude::*;
@@ -81,6 +82,7 @@ mod tests {
         app.add_plugins((MinimalPlugins, AssetPlugin::default()))
             .init_asset::<Mesh>()
             .init_asset::<StandardMaterial>()
+            .init_asset::<Image>()
             .insert_resource(workers)
             .insert_resource(WorldSettings {
                 view_radius,
