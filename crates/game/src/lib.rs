@@ -1,5 +1,6 @@
 //! Composition root. Wires adapters into the core; nothing else builds infrastructure (ADR 0002).
 
+pub mod camera;
 #[cfg(feature = "dev")]
 pub mod dev;
 pub mod environment;
@@ -9,6 +10,7 @@ pub mod world;
 
 use bevy::prelude::*;
 
+use camera::CameraPlugin;
 use environment::EnvironmentPlugin;
 pub use run_mode::RunMode;
 use world::WorldPlugin;
@@ -20,7 +22,7 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((EnvironmentPlugin, WorldPlugin))
+        app.add_plugins((EnvironmentPlugin, WorldPlugin, CameraPlugin))
             .add_systems(Startup, announce_startup);
     }
 }

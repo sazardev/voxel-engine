@@ -16,6 +16,7 @@ crates/
       main.rs                      window + renderer + GamePlugin
       run_mode.rs                  RunMode (Player or Dev) and the log filter per mode
       dev/                         developer tools, compiled only with `--features dev` (overlay, hotkeys)
+      camera.rs                    MainCamera: a fixed overview for now; _planned_: the FR-16 rig
       environment/                 Environment resource: time, weather (single source for light, fog, sky); daylight, sun
       render/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
