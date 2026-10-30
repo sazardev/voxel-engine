@@ -13,6 +13,8 @@ targets/ios/DerivedData/
 # Profiler captures
 *.tracy
 *.trace
+# Chrome traces written by `cargo profile`
+trace-*.json
 # Local agent state
 .claude/settings.local.json
 .serena/
