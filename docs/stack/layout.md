@@ -6,7 +6,7 @@ Where code lives. Folders are by feature; dependencies point inward (ADR 0002). 
 Cargo.toml                         workspace, shared dependencies and lints; profiles: dev (opt 1, deps 3), release (thin LTO), web (opt "s", lto)
 crates/
   voxel-core/                      chunks, coordinates, edits, ports (ChunkStore, Clock) and their fakes (no Bevy)
-  voxel-gen/                       seeded generation (pure)
+  voxel-gen/                       seeded generation (pure, integer-only: ADR 0010): terrain heightmap, golden fixture
   voxel-mesh/                      greedy meshing, AO bake, LOD meshes
   platform/                        capabilities (probe result), storage, input mapping, per-OS glue
   guard/                           architecture and docs tests only (ADR 0007)

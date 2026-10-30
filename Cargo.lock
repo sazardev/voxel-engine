@@ -6506,7 +6506,9 @@ dependencies = [
 name = "voxel-gen"
 version = "0.0.0"
 dependencies = [
- "thiserror 2.0.21",
+ "criterion 0.8.2",
+ "postcard",
+ "proptest",
  "voxel-core",
 ]
 

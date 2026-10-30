@@ -11,5 +11,13 @@ description = "Seeded, deterministic world generation. Pure."
 workspace = true
 
 [dependencies]
-thiserror.workspace = true
 voxel-core.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+postcard.workspace = true
+proptest.workspace = true
+
+[[bench]]
+name = "generate_chunk"
+harness = false
