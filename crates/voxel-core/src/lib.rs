@@ -10,6 +10,7 @@ mod coords;
 mod edit_error;
 mod memory_store;
 mod ray;
+mod scale;
 mod store;
 mod voxel;
 
@@ -20,5 +21,6 @@ pub use coords::{ChunkPos, LocalPos};
 pub use edit_error::EditError;
 pub use memory_store::MemoryChunkStore;
 pub use ray::{RayHit, cast_ray};
+pub use scale::{MODEL_VOXEL_SIZE_METRES, VOXEL_SIZE_METRES, VOXELS_PER_METRE};
 pub use store::{ChunkStore, StoreError};
 pub use voxel::VoxelId;

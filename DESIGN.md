@@ -6,12 +6,12 @@ First or third person, offline, readable at a glance.
 
 ## Principles
 
-- **One voxel size**: every model, block and effect uses the same voxel unit (1 block = 16 voxels); nothing is scaled off-grid.
+- **Two voxel sizes, one grid**: the world (terrain, buildings, anything that can be dug or destroyed) is built from 25 cm voxels; characters, items and props from 12.5 cm voxels, exactly half, so every model sits on the world grid. Nothing is scaled off-grid (ADR 0015).
 - **Silhouette first**: a character or object is recognizable from its shape in one color before any detail.
 - **Palette, not paint**: colors come from a shared palette of 32-64 entries with ramps (shadow → light, hue-shifted), never ad hoc RGB.
 - **Light does the work**: simple geometry plus ambient occlusion, a sun and soft shadows reads as rich.
 - **Honest cubes**: no fake smoothing; bevels and rounding are part of the model, not a shader trick.
-- **References**: Minecraft (readability, scale), Dragon Quest Builders 2 (warm, friendly palette), Hytale (stylized voxels with strong lighting), Cube World and Trove (character silhouettes).
+- **References**: Teardown (small cubes everywhere, light doing the work), Minecraft (readability), Dragon Quest Builders 2 (warm, friendly palette), Hytale (stylized voxels with strong lighting), Cube World and Trove (character silhouettes).
 - First person: the player sees through the character's eyes; the HUD stays small and mostly near the edges.
 - Third person: the character is part of the image; the camera keeps them readable and never clips into walls.
 
@@ -54,7 +54,7 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 ## Spacing and layout
 
-- World unit: 1 block = 16 voxels = 1 m; the HUD uses a 4px grid scaled by the UI scale setting (75-150%).
+- World unit: 1 m = 4 world voxels (25 cm) = 8 model voxels (12.5 cm); the HUD uses a 4px grid scaled by the UI scale setting (75-150%).
 - Hotbar and crosshair centered; health and stats in the corners, inside a 5% safe margin.
 - Menus are single-column lists with large targets (min 48px) for mouse and gamepad.
 - Minimum window 800×600; layouts reflow from one to three panes (sidebar, list, detail) as the window grows; splitters remember their width.
@@ -75,7 +75,7 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 | Token                | Value                                                             | Use                           |
 | -------------------- | ----------------------------------------------------------------- | ----------------------------- |
-| voxel-size           | 1/16 block                                                        | Models, props                 |
+| voxel-size           | 25 cm world, 12.5 cm models                                       | Terrain and buildings; models |
 | ao                   | baked per vertex, 4 levels, strength 0.35                         | Soft corner darkening         |
 | shadow-color         | tinted by the ambient `fill` color, never pure black              | Depth and mood                |
 | hud-radius           | 4px (or 0 for a hard cube look)                                   | HUD panels                    |
@@ -192,7 +192,7 @@ Palette of ramps (approx.); every material takes a ramp of 4-5 steps, shadows sh
 
 - Make every model and texture on the voxel grid with the shared palette; never introduce a free color.
 - Light with the shared environment (sun, ambient, AO); do not tint materials to fake shading.
-- Voxel size and block size are constants in one place; never hardcode a scale.
+- Voxel sizes are constants in one place (`voxel_core::VOXEL_SIZE_METRES`, `MODEL_VOXEL_SIZE_METRES`); never hardcode a scale.
 - HUD reads game state and sends intents; HUD tokens come from one theme file.
 - Never require the mouse: every flow works with the keyboard alone, with visible focus.
 - Persist window size, position and pane widths between sessions.
