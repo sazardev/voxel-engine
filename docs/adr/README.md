@@ -24,3 +24,4 @@ One decision per file, numbered `NNNN-kebab-title.md`, from `0000-template.md`.
 | 0014 | Player collision and rays against the voxel grid    | accepted           |
 | 0015 | World voxels of 25 cm, model voxels of 12.5 cm      | accepted           |
 | 0016 | Level of detail: quadtree of height-field patches   | accepted           |
+| 0017 | World save: versioned file, atomic writes, backup   | accepted           |

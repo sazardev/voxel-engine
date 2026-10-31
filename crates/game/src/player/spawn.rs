@@ -10,14 +10,26 @@ use crate::world::{StreamFocus, Terrain};
 /// Placeholder body color until characters exist: wood-ramp `#C98B4B` from DESIGN.md.
 const BODY_COLOR: Srgba = Srgba::rgb(0.788, 0.545, 0.294);
 
+/// Where the player appears, when a save says so; otherwise on the terrain at the origin.
+#[derive(Debug, Clone, Copy, PartialEq, Resource)]
+pub struct PlayerStart {
+    pub feet: Vec3,
+    pub look: Look,
+}
+
 /// The visible model of the player, a child of the player entity.
 #[derive(Debug, Component)]
 pub struct PlayerModel;
 
-/// Spawns the player standing on the terrain at the world origin.
+/// Spawns the player where a save left them, or standing on the terrain at the world origin.
+#[expect(
+    clippy::too_many_arguments,
+    reason = "a Bevy system: each parameter is a resource or query it uses"
+)]
 pub(super) fn spawn_player(
     mut commands: Commands,
     terrain: Res<Terrain>,
+    start: Option<Res<PlayerStart>>,
     mut focus: ResMut<StreamFocus>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -29,7 +41,8 @@ pub(super) fn spawn_player(
     )]
     let ground = (terrain.0.surface_height(x, z) + 1) as f32 * VOXEL_SIZE_METRES;
     // Stand in the middle of voxel (x, z).
-    let feet = Vec3::new(0.5 * VOXEL_SIZE_METRES, ground, 0.5 * VOXEL_SIZE_METRES);
+    let origin = Vec3::new(0.5 * VOXEL_SIZE_METRES, ground, 0.5 * VOXEL_SIZE_METRES);
+    let (feet, look) = start.map_or((origin, Look::default()), |start| (start.feet, start.look));
     focus.0 = feet;
     let model = (
         PlayerModel,
@@ -45,7 +58,7 @@ pub(super) fn spawn_player(
         .spawn((
             Player,
             Body::at(feet),
-            Look::default(),
+            look,
             PlayerAction::default_input_map(),
             ActionState::<PlayerAction>::default(),
             Transform::from_translation(feet),

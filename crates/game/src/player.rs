@@ -10,7 +10,7 @@ use bevy::prelude::*;
 
 pub use body::{Body, Look, Player};
 pub use kinematics::{BODY_HALF_WIDTH, BODY_HEIGHT, BodyState, MoveIntent, step};
-pub use spawn::PlayerModel;
+pub use spawn::{PlayerModel, PlayerStart};
 
 use crate::world::Terrain;
 

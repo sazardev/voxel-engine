@@ -8,6 +8,7 @@ pub mod input;
 pub mod player;
 pub mod render;
 mod run_mode;
+pub mod save;
 pub mod world;
 
 use bevy::prelude::*;
@@ -17,6 +18,7 @@ use environment::EnvironmentPlugin;
 use input::InputPlugin;
 use player::PlayerPlugin;
 pub use run_mode::RunMode;
+use save::SavePlugin;
 use world::WorldPlugin;
 
 /// Adds every game feature plugin to the `App`. Window and renderer plugins stay in `main`
@@ -32,6 +34,7 @@ impl Plugin for GamePlugin {
             WorldPlugin,
             PlayerPlugin,
             CameraPlugin,
+            SavePlugin,
         ))
         .add_systems(Startup, announce_startup);
     }
