@@ -24,7 +24,7 @@ pub use edit_error::EditError;
 pub use memory_save_store::MemorySaveStore;
 pub use memory_store::MemoryChunkStore;
 pub use ray::{RayHit, cast_ray};
-pub use save_store::{SaveStore, SaveStoreError};
+pub use save_store::{SaveFileInfo, SaveStore, SaveStoreError};
 pub use scale::{MODEL_VOXEL_SIZE_METRES, VOXEL_SIZE_METRES, VOXELS_PER_METRE};
 pub use store::{ChunkStore, StoreError};
 pub use voxel::VoxelId;
