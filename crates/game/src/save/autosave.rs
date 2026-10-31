@@ -140,10 +140,12 @@ pub(super) fn save_on_exit(
         // The last autosave finishes before the final one replaces it.
         let _ = block_on(task);
     }
-    if let Some(world) = capture(&settings, &environment, players.iter().next()) {
-        match slot.save(&world) {
-            Ok(()) => info!("saved the world"),
-            Err(error) => error!("saving on quit failed: {error}"),
-        }
+    let Some(world) = capture(&settings, &environment, players.iter().next()) else {
+        warn!("quit before the player appeared; nothing to save");
+        return;
+    };
+    match slot.save(&world) {
+        Ok(()) => info!("saved the world"),
+        Err(error) => error!("saving on quit failed: {error}"),
     }
 }
