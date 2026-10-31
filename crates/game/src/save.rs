@@ -3,8 +3,13 @@
 
 mod autosave;
 mod format;
+mod select;
 mod slot;
 mod snapshot;
+mod startup_args;
+mod world_id;
+mod world_list_text;
+mod worlds;
 
 use bevy::prelude::*;
 use voxel_gen::WorldSeed;
@@ -14,8 +19,13 @@ pub use format::{
     EditedChunk, EnvironmentSave, FORMAT_VERSION, PlayerSave, SaveError, SavedWeather, WorldSave,
     decode, encode,
 };
-pub use slot::{BACKUP_NAME, Loaded, SAVE_NAME, load, save};
+pub use select::{FIRST_WORLD_NAME, WorldChoice, choose_world};
+pub use slot::{Loaded, load, save};
 pub use snapshot::{apply, capture};
+pub use startup_args::{ArgsError, StartupRequest, parse_startup_args};
+pub use world_id::{LEGACY_ID, WorldId, WorldIdError};
+pub use world_list_text::format_world_list;
+pub use worlds::{MAX_WORLDS, WorldSummary, WorldsError, create_world, list_worlds};
 
 #[derive(Debug, Default)]
 pub struct SavePlugin;
@@ -98,7 +108,7 @@ mod tests {
 
     #[test]
     fn quitting_saves_the_world_and_the_next_start_resumes_it() {
-        let slot = SaveSlot::new(MemorySaveStore::default());
+        let slot = SaveSlot::new(MemorySaveStore::default(), WorldId::legacy());
         let mut first = game_app(&slot, 11);
         let (body, _) = run_until_player(&mut first);
         let resumed_feet = body.state.feet + Vec3::new(2.0, 0.0, -1.5);
@@ -150,8 +160,11 @@ mod tests {
         })
         .expect("encodes");
         newer[4..6].copy_from_slice(&(FORMAT_VERSION + 1).to_le_bytes());
-        store.write(SAVE_NAME, &newer).expect("memory never fails");
-        let slot = SaveSlot::new(store);
+        let world = WorldId::legacy();
+        store
+            .write(&world.save_file(), &newer)
+            .expect("memory never fails");
+        let slot = SaveSlot::new(store, world.clone());
         let mut app = game_app(&slot, 11);
 
         run_until_player(&mut app);
@@ -159,10 +172,10 @@ mod tests {
         app.update();
 
         let stored = slot
-            .0
+            .store
             .lock()
             .expect("not poisoned")
-            .read(SAVE_NAME)
+            .read(&world.save_file())
             .expect("memory never fails");
         assert_eq!(stored, Some(newer));
     }

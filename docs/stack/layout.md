@@ -22,7 +22,7 @@ crates/
         tiers.rs                   Tier::{Low, Mid, High, Ultra} chosen from Capabilities and the settings
         passes/                    _planned_: sun_shadows, ssao, voxel_rt (high), fog, bloom, post
       world/                       streaming plan, LOD quadtree and patches, voxel data, chunk meshes, colors and tint; _planned_: edit queue
-      save/                        world save format, slot with backup, load at startup, autosave and save on quit (ADR 0017)
+      save/                        world save format, slot with backup, load at startup, autosave and save on quit (ADR 0017); world ids, world list, startup choice (ADR 0018)
       input.rs                     PlayerAction and default bindings (keyboard, mouse, gamepad)
       player/                      player body, fixed-step movement against the grid, spawn; _planned_: touch
       ui/                          _planned_: HUD, menus (scale for touch targets)

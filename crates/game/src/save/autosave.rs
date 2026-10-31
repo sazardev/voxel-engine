@@ -10,6 +10,7 @@ use voxel_core::SaveStore;
 use super::format::{SaveError, WorldSave};
 use super::slot::{load, save};
 use super::snapshot::{apply, capture};
+use super::world_id::WorldId;
 use crate::environment::Environment;
 use crate::player::{Body, Look, Player};
 use crate::world::WorldSettings;
@@ -17,9 +18,13 @@ use crate::world::WorldSettings;
 /// Seconds between autosaves; the settings will choose it (SPEC Q15).
 pub const AUTOSAVE_SECONDS: f32 = 60.0;
 
-/// Where this session saves. The composition root inserts it; without it nothing is saved.
+/// Where this session saves and which world it plays. The composition root inserts it; without
+/// it nothing is saved.
 #[derive(Clone, Resource)]
-pub struct SaveSlot(pub Arc<Mutex<dyn SaveStore + Send>>);
+pub struct SaveSlot {
+    pub store: Arc<Mutex<dyn SaveStore + Send>>,
+    pub world: WorldId,
+}
 
 impl std::fmt::Debug for SaveSlot {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -28,15 +33,18 @@ impl std::fmt::Debug for SaveSlot {
 }
 
 impl SaveSlot {
-    pub fn new(store: impl SaveStore + Send + 'static) -> Self {
-        Self(Arc::new(Mutex::new(store)))
+    pub fn new(store: impl SaveStore + Send + 'static, world: WorldId) -> Self {
+        Self {
+            store: Arc::new(Mutex::new(store)),
+            world,
+        }
     }
 
     fn save(&self, world: &WorldSave) -> Result<(), SaveError> {
         // A panic while saving cannot leave the store half-written (writes are atomic), so a
         // poisoned lock is still safe to use.
-        let mut store = self.0.lock().unwrap_or_else(PoisonError::into_inner);
-        save(&mut *store, world)
+        let mut store = self.store.lock().unwrap_or_else(PoisonError::into_inner);
+        save(&mut *store, &self.world, world)
     }
 }
 
@@ -58,8 +66,8 @@ pub(super) fn load_world(
         return;
     };
     let loaded = {
-        let store = slot.0.lock().unwrap_or_else(PoisonError::into_inner);
-        load(&*store)
+        let store = slot.store.lock().unwrap_or_else(PoisonError::into_inner);
+        load(&*store, &slot.world)
     };
     let result = loaded.and_then(|loaded| match loaded {
         None => Ok(None),
